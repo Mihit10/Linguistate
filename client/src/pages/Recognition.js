@@ -1,18 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 
 const SpeechRecognitionComponent = () => {
-  const [text, setText] = useState(""); // Stores full transcribed text
+  const [text, setText] = useState(""); // Full transcript (final + interim)
   const [isListening, setIsListening] = useState(false);
-  const [language, setLanguage] = useState("en-IN"); // Default to English (India)
+  const [language, setLanguage] = useState("en-IN"); // Default: English (India)
   const recognitionRef = useRef(null);
-  const finalTranscriptRef = useRef(new Set()); // Set to track unique transcribed sentences
-  const lastTranscriptRef = useRef(""); // Stores last recognized sentence
+  const finalTranscriptRef = useRef(""); // Holds the final transcript (accumulated)
+  
+  // Helper: Normalize a string (remove extra spaces, lowercase)
+  const normalize = (str) => str.replace(/\s+/g, " ").trim().toLowerCase();
 
   useEffect(() => {
     return () => {
-      if (recognitionRef.current) {
-        recognitionRef.current.stop();
-      }
+      if (recognitionRef.current) recognitionRef.current.stop();
     };
   }, []);
 
@@ -39,27 +39,29 @@ const SpeechRecognitionComponent = () => {
 
       recognitionRef.current.onstart = () => {
         console.log("Speech recognition started:", language);
-        finalTranscriptRef.current.clear(); // Reset previous transcript tracking
-        lastTranscriptRef.current = "";
+        finalTranscriptRef.current = ""; // Clear previous transcript
       };
 
       recognitionRef.current.onresult = (event) => {
-        let newSentence = "";
+        let interimTranscript = "";
+        // Process each result starting from the given resultIndex
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript.trim();
+          const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
-            newSentence = transcript;
+            // Get the new final sentence (trimmed)
+            const newSentence = transcript.trim();
+            // Get the current accumulated final transcript
+            const currentFinal = finalTranscriptRef.current.trim();
+            // If the normalized current final transcript does NOT already end with the normalized new sentence, append it.
+            if (!normalize(currentFinal).endsWith(normalize(newSentence))) {
+              finalTranscriptRef.current = (currentFinal + " " + newSentence).trim();
+            }
+          } else {
+            interimTranscript += transcript + " ";
           }
         }
-
-        if (
-          newSentence.length > 0 &&
-          !finalTranscriptRef.current.has(newSentence)
-        ) {
-          finalTranscriptRef.current.add(newSentence);
-          lastTranscriptRef.current = newSentence;
-          setText(Array.from(finalTranscriptRef.current).join(" ")); // Join unique sentences
-        }
+        // Update state with final transcript plus current interim results
+        setText((finalTranscriptRef.current + " " + interimTranscript).trim());
       };
 
       recognitionRef.current.onerror = (event) => {
@@ -70,11 +72,12 @@ const SpeechRecognitionComponent = () => {
 
       recognitionRef.current.onend = () => {
         console.log("Speech recognition ended.");
+        // Restart if we are still in listening mode
         if (isListening) {
           console.log("Restarting speech recognition...");
           setTimeout(() => {
             if (recognitionRef.current) recognitionRef.current.start();
-          }, 500); // Restart with a slight delay (fix for mobile browsers)
+          }, 500); // Delay before restarting
         }
       };
 
@@ -96,12 +99,12 @@ const SpeechRecognitionComponent = () => {
 
   return (
     <div className="flex flex-col items-center space-y-4 p-6">
-      {/* Language Selection Dropdown */}
+      {/* Language Selection */}
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value)}
         className="p-2 border rounded"
-        disabled={isListening} // Prevent changing language while speaking
+        disabled={isListening}
       >
         <option value="en-IN">English (India)</option>
         <option value="hi-IN">Hindi (हिन्दी)</option>
@@ -124,7 +127,7 @@ const SpeechRecognitionComponent = () => {
       {/* Start Button */}
       <button
         onClick={startRecognition}
-        disabled={isListening} // Disable if already listening
+        disabled={isListening}
         className={`px-6 py-2 rounded text-white font-semibold transition-all ${
           isListening ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
         }`}
