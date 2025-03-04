@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { useNavigate } from "react-router-dom";
 
 // SVG Icons
 const BudgetIcon = () => (
@@ -48,6 +49,7 @@ const WhatsAppIcon = () => (
 );
 
 const BrokerDash = () => {
+  const navigate = useNavigate();
   const [transcription, setTranscription] = useState([
     { id: 1, text: "Hi there, I'm looking for a 2-bedroom apartment.", sender: 'client' },
     { id: 2, text: "Great! Can you tell me more about your budget and preferred location?", sender: 'broker' }
@@ -287,6 +289,7 @@ const BrokerDash = () => {
             />
             <Button 
               className="w-full mt-4 bg-[#8B4513] text-white"
+              onClick={() => navigate("/summarizer")}
             >
               Generate Summary
             </Button>
