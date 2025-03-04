@@ -175,12 +175,12 @@ const SpeechRecognitionComponent = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-900 to-indigo-900 flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4">
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="w-full max-w-md bg-white/10 backdrop-blur-xl shadow-2xl rounded-2xl p-6 border border-white/20 relative"
+        className="w-full max-w-md bg-white/10 bg-gradient-to-br from-blue-900 to-indigo-900 backdrop-blur-xl shadow-2xl rounded-2xl p-6 border border-white/20 relative"
       >
         {/* Header with Language and Duration */}
         <div className="flex justify-between items-center mb-6">

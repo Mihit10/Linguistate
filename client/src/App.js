@@ -5,6 +5,7 @@ import BrokerLogin from './pages/BrokerLogin';
 import BrokerDash from './pages/BrokerDash';
 import Summarizer from './pages/Summarizer';
 import ClientDash from './pages/ClientDash';
+import ClientHome from './pages/ClientHome';
 
 function App() {
 
@@ -31,6 +32,7 @@ const RoutesWeb = () => {
         <Route path="/bdash" element={<BrokerDash />} />
         <Route path="/summarizer" element={<Summarizer />} />
         <Route path="/clientdash" element={<ClientDash/>} />
+        <Route path="/clienthome" element={<ClientHome/>} />
         
       </Routes>
       {/* {!isAdminRoute && <Footer />}       Conditionally render Footer */}
