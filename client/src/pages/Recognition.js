@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Mic, MicOff, Globe, Clock } from "lucide-react";
+import socket from "./socket";
 
-const SpeechRecognitionComponent = () => {
+const SpeechRecognitionComponent = ({ room, username }) => {
+
   const [text, setText] = useState(""); 
   const [transcriptLines, setTranscriptLines] = useState([]);
   const [isListening, setIsListening] = useState(false);
@@ -13,6 +15,79 @@ const SpeechRecognitionComponent = () => {
   const lastFinalSegmentRef = useRef(""); 
   const sessionIntervalRef = useRef(null);
 
+  const [joined, setJoined] = useState(true);
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState("");
+
+
+  const joinRoom = () => {
+    if (room.trim() !== "" && username.trim() !== "") {
+      socket.emit("joinRoom", { room });
+      console.log("Emitting joinRoom event with room:", room); // Debugging
+      setJoined(true);
+    }
+    console.log(messages);
+  };
+
+
+  // Ensure the user joins the room when username and room are available
+  useEffect(() => {
+    if (room.trim() !== "" && username.trim() !== "") {
+      console.log("Joining room:", room);
+      socket.emit("joinRoom", { room });
+      setJoined(true);
+    }
+  }, [room, username]);
+
+  useEffect(() => {
+    console.log(transcriptLines);
+  }, [transcriptLines]);
+
+
+  // socket wala backend
+  useEffect(() => {
+    console.log("🔗 Connecting WebSocket...");
+    socket.connect(); // Explicitly connect on mount
+
+    socket.on("connect", () => {
+      console.log("✅ WebSocket Connected!", socket.id);
+    });
+
+    // Clear previous listeners before setting new ones
+    socket.off("loadMessages").on("loadMessages", (pastMessages) => {
+      console.log("📩 Messages received:", pastMessages);
+      setMessages(pastMessages);
+    });
+
+    socket.off("receiveMessage").on("receiveMessage", (newMessage) => {
+      console.log("🔴 New message received:", newMessage);
+      setMessages((prev) => [...prev, newMessage]);
+    });
+
+    return () => {
+      console.log("⚠️ Cleaning up listeners");
+      socket.off("loadMessages");
+      socket.off("receiveMessage");
+    };
+  }, []);
+
+
+  useEffect(() => {
+    if (transcriptLines.length > 0) {
+      const latestMessage = transcriptLines[transcriptLines.length - 1]; 
+      console.log("Sending:", { room, sender: username, text: latestMessage });
+      socket.emit("sendMessage", { room, sender: username, text: latestMessage });
+    }
+  }, [transcriptLines]);
+  
+
+  const sendMessage = () => {
+    if (message.trim() !== "") {
+      console.log("Sending:", { room, sender: username, text: message });
+      socket.emit("sendMessage", { room, sender: username, text: message });
+      setMessage("");
+    }
+  };
 
   // Optimize text breaking
   const breakLongText = useCallback((text, maxLength = 40) => {
@@ -26,12 +101,18 @@ const SpeechRecognitionComponent = () => {
       if ((currentLine + word).length <= maxLength) {
         currentLine += (currentLine ? ' ' : '') + word;
       } else {
-        if (currentLine) lines.push(currentLine);
+        if (currentLine) {
+          lines.push(currentLine);
+          socket.emit("sendMessage", { room, sender: username, text: currentLine });
+        }
         currentLine = word;
       }
     });
 
-    if (currentLine) lines.push(currentLine);
+
+    if (currentLine) {
+      lines.push(currentLine);
+      console.log(currentLine);}
     return lines;
   }, []);
 
