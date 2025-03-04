@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 
 const SpeechRecognitionComponent = () => {
-  const [text, setText] = useState(""); // Full transcribed text
+  const [text, setText] = useState(""); // Stores full transcribed text
   const [isListening, setIsListening] = useState(false);
   const [language, setLanguage] = useState("en-IN"); // Default to English (India)
   const recognitionRef = useRef(null);
-  const finalTranscriptRef = useRef(""); // Stores final transcript
-  const recognizedWordsSet = useRef(new Set()); // Tracks unique words
+  const finalTranscriptRef = useRef(new Set()); // Set to track unique transcribed sentences
+  const lastTranscriptRef = useRef(""); // Stores last recognized sentence
 
   useEffect(() => {
     return () => {
@@ -39,29 +39,27 @@ const SpeechRecognitionComponent = () => {
 
       recognitionRef.current.onstart = () => {
         console.log("Speech recognition started:", language);
-        finalTranscriptRef.current = "";
-        recognizedWordsSet.current.clear(); // Clear stored words
+        finalTranscriptRef.current.clear(); // Reset previous transcript tracking
+        lastTranscriptRef.current = "";
       };
 
       recognitionRef.current.onresult = (event) => {
-        let interimTranscript = "";
-        let finalTranscript = finalTranscriptRef.current;
-
+        let newSentence = "";
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript.trim();
-          
           if (event.results[i].isFinal) {
-            if (!recognizedWordsSet.current.has(transcript)) {
-              recognizedWordsSet.current.add(transcript); // Store unique words
-              finalTranscript += transcript + " "; // Append only new final text
-            }
-          } else {
-            interimTranscript += transcript + " "; // Show live text
+            newSentence = transcript;
           }
         }
 
-        finalTranscriptRef.current = finalTranscript;
-        setText(finalTranscript + interimTranscript.trim());
+        if (
+          newSentence.length > 0 &&
+          !finalTranscriptRef.current.has(newSentence)
+        ) {
+          finalTranscriptRef.current.add(newSentence);
+          lastTranscriptRef.current = newSentence;
+          setText(Array.from(finalTranscriptRef.current).join(" ")); // Join unique sentences
+        }
       };
 
       recognitionRef.current.onerror = (event) => {
@@ -76,7 +74,7 @@ const SpeechRecognitionComponent = () => {
           console.log("Restarting speech recognition...");
           setTimeout(() => {
             if (recognitionRef.current) recognitionRef.current.start();
-          }, 1000); // Restart with a slight delay (fix for mobile browsers)
+          }, 500); // Restart with a slight delay (fix for mobile browsers)
         }
       };
 
