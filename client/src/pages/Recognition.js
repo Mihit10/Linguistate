@@ -1,14 +1,18 @@
 import React, { useState, useRef, useEffect } from "react";
 
 const SpeechRecognitionComponent = () => {
-  const [text, setText] = useState(""); // Full transcript (final + interim)
+  const [text, setText] = useState(""); // Accumulated transcript (final + interim)
   const [isListening, setIsListening] = useState(false);
-  const [language, setLanguage] = useState("en-IN"); // Default: English (India)
+  const [language, setLanguage] = useState("en-IN"); // Default language: English (India)
   const recognitionRef = useRef(null);
-  const finalTranscriptRef = useRef(""); // Holds the final transcript (accumulated)
-  
-  // Helper: Normalize a string (remove extra spaces, lowercase)
-  const normalize = (str) => str.replace(/\s+/g, " ").trim().toLowerCase();
+  const finalTranscriptRef = useRef(""); // Holds the accumulated final transcript
+  const lastFinalSegmentRef = useRef(""); // Holds the last final result for duplicate checking
+
+  // Detect mobile devices
+  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+
+  // A helper to normalize text (remove extra spaces, lowercase, strip punctuation if desired)
+  const normalize = (str) => str.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").trim().toLowerCase();
 
   useEffect(() => {
     return () => {
@@ -16,95 +20,99 @@ const SpeechRecognitionComponent = () => {
     };
   }, []);
 
-  const startRecognition = () => {
-    if (isListening) {
-      console.warn("Speech recognition is already running.");
-      return;
-    }
-
+  // For both mobile and desktop, we call this to (re)start recognition.
+  // On mobile we use segmented mode (continuous false) and chain segments.
+  // On desktop we use continuous mode.
+  const startRecognitionInternal = () => {
     try {
-      console.log("Initializing speech recognition...");
-      const SpeechRecognition =
-        window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
-        console.error("Speech recognition not supported in this browser.");
         setText("Speech recognition not supported in this browser.");
         return;
       }
 
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.lang = language;
-      recognitionRef.current.continuous = true;
       recognitionRef.current.interimResults = true;
+      recognitionRef.current.continuous = isMobile ? false : true; // segmented mode for mobile
 
       recognitionRef.current.onstart = () => {
         console.log("Speech recognition started:", language);
-        finalTranscriptRef.current = ""; // Clear previous transcript
+        // Reset last segment when starting a new recognition instance
+        lastFinalSegmentRef.current = "";
       };
 
       recognitionRef.current.onresult = (event) => {
         let interimTranscript = "";
-        // Process each result starting from the given resultIndex
+        // Process results from the event starting at resultIndex
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
+          const transcript = event.results[i][0].transcript.trim();
           if (event.results[i].isFinal) {
-            // Get the new final sentence (trimmed)
-            const newSentence = transcript.trim();
-            // Get the current accumulated final transcript
-            const currentFinal = finalTranscriptRef.current.trim();
-            // If the normalized current final transcript does NOT already end with the normalized new sentence, append it.
-            if (!normalize(currentFinal).endsWith(normalize(newSentence))) {
-              finalTranscriptRef.current = (currentFinal + " " + newSentence).trim();
+            // Only append if the normalized final result is different from the previous final segment
+            if (normalize(transcript) !== normalize(lastFinalSegmentRef.current)) {
+              finalTranscriptRef.current = (finalTranscriptRef.current + " " + transcript).trim();
+              lastFinalSegmentRef.current = transcript;
             }
           } else {
             interimTranscript += transcript + " ";
           }
         }
-        // Update state with final transcript plus current interim results
         setText((finalTranscriptRef.current + " " + interimTranscript).trim());
       };
 
       recognitionRef.current.onerror = (event) => {
-        console.error("Error occurred:", event);
+        console.error("Speech recognition error:", event);
         setText("Error occurred. Please try again.");
         stopRecognition();
       };
 
       recognitionRef.current.onend = () => {
         console.log("Speech recognition ended.");
-        // Restart if we are still in listening mode
         if (isListening) {
-          console.log("Restarting speech recognition...");
-          setTimeout(() => {
-            if (recognitionRef.current) recognitionRef.current.start();
-          }, 500); // Delay before restarting
+          // For mobile (segmented mode), restart after a short delay.
+          // On desktop, continuous mode usually won't trigger onend unless there's a pause.
+          if (isMobile) {
+            setTimeout(() => {
+              startRecognitionInternal();
+            }, 300);
+          }
         }
       };
 
       recognitionRef.current.start();
-      setIsListening(true);
     } catch (error) {
       console.error("Error initializing speech recognition:", error);
       setText("Speech recognition failed.");
     }
   };
 
+  const startRecognition = () => {
+    if (isListening) {
+      console.warn("Speech recognition is already running.");
+      return;
+    }
+    // Reset accumulated text
+    finalTranscriptRef.current = "";
+    setText("");
+    setIsListening(true);
+    startRecognitionInternal();
+  };
+
   const stopRecognition = () => {
+    setIsListening(false);
     if (recognitionRef.current) {
-      console.log("Stopping speech recognition...");
       recognitionRef.current.stop();
-      setIsListening(false);
     }
   };
 
   return (
     <div className="flex flex-col items-center space-y-4 p-6">
-      {/* Language Selection */}
+      {/* Language Selection Dropdown */}
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value)}
         className="p-2 border rounded"
-        disabled={isListening}
+        disabled={isListening} // Prevent changing language while listening
       >
         <option value="en-IN">English (India)</option>
         <option value="hi-IN">Hindi (हिन्दी)</option>
@@ -115,7 +123,7 @@ const SpeechRecognitionComponent = () => {
         <option value="pa-IN">Punjabi (ਪੰਜਾਬੀ)</option>
       </select>
 
-      {/* Mic Indicator */}
+      {/* Mic Indicator (Live Feedback) */}
       <div
         className={`w-16 h-16 flex items-center justify-center rounded-full text-white font-bold text-lg ${
           isListening ? "bg-red-500 animate-pulse" : "bg-gray-300"
