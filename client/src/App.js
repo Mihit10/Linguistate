@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import SpeechRecognitionComponent from './pages/Recognition';
 import BrokerLogin from './pages/BrokerLogin';
 import BrokerDash from './pages/BrokerDash';
+import Summarizer from './pages/Summarizer';
 
 function App() {
 
@@ -27,6 +28,7 @@ const RoutesWeb = () => {
         <Route path="/" element={<SpeechRecognitionComponent />} />
         <Route path="/blogin" element={<BrokerLogin />} />
         <Route path="/bdash" element={<BrokerDash />} />
+        <Route path="/summarizer" element={<Summarizer />} />
         
         
       </Routes>
