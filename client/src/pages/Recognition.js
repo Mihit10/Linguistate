@@ -1,34 +1,79 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Mic, MicOff, Globe, Clock } from "lucide-react";
 
 const SpeechRecognitionComponent = () => {
-  const [text, setText] = useState(""); // Accumulated transcript (final + interim)
+  const [text, setText] = useState(""); 
+  const [transcriptLines, setTranscriptLines] = useState([]);
   const [isListening, setIsListening] = useState(false);
-  const [language, setLanguage] = useState("en-IN"); // Default language: English (India)
+  const [language, setLanguage] = useState("en-IN");
+  const [sessionDuration, setSessionDuration] = useState(0);
   const recognitionRef = useRef(null);
-  const finalTranscriptRef = useRef(""); // Holds the accumulated final transcript
-  const lastFinalSegmentRef = useRef(""); // Holds the last final result for duplicate checking
+  const finalTranscriptRef = useRef(""); 
+  const lastFinalSegmentRef = useRef(""); 
+  const sessionIntervalRef = useRef(null);
 
-  // Detect mobile devices
-  const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
-  // A helper to normalize text (remove extra spaces, lowercase, strip punctuation if desired)
+  // Optimize text breaking
+  const breakLongText = useCallback((text, maxLength = 40) => {
+    if (text.length <= maxLength) return [text];
+    
+    const words = text.split(' ');
+    const lines = [];
+    let currentLine = '';
+
+    words.forEach(word => {
+      if ((currentLine + word).length <= maxLength) {
+        currentLine += (currentLine ? ' ' : '') + word;
+      } else {
+        if (currentLine) lines.push(currentLine);
+        currentLine = word;
+      }
+    });
+
+    if (currentLine) lines.push(currentLine);
+    return lines;
+  }, []);
+
+  // A helper to normalize text 
   const normalize = (str, lang) => {
     if (lang.startsWith("en")) {
         return str.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").trim().toLowerCase();
     }
-    return str.trim(); // Keep original form for non-English languages
-};
+    return str.trim(); 
+  };
 
+  // Format duration
+  const formatDuration = (seconds) => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
 
   useEffect(() => {
     return () => {
       if (recognitionRef.current) recognitionRef.current.stop();
+      if (sessionIntervalRef.current) clearInterval(sessionIntervalRef.current);
     };
   }, []);
 
-  // For both mobile and desktop, we call this to (re)start recognition.
-  // On mobile we use segmented mode (continuous false) and chain segments.
-  // On desktop we use continuous mode.
+  // Start session timer
+  const startSessionTimer = () => {
+    setSessionDuration(0);
+    sessionIntervalRef.current = setInterval(() => {
+      setSessionDuration(prev => prev + 1);
+    }, 1000);
+  };
+
+  // Stop session timer
+  const stopSessionTimer = () => {
+    if (sessionIntervalRef.current) {
+      clearInterval(sessionIntervalRef.current);
+      sessionIntervalRef.current = null;
+    }
+  };
+
+  // Optimized recognition internal method
   const startRecognitionInternal = () => {
     try {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -40,11 +85,10 @@ const SpeechRecognitionComponent = () => {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.lang = language;
       recognitionRef.current.interimResults = true;
-      recognitionRef.current.continuous = isMobile ? true : true; // segmented mode for mobile
+      recognitionRef.current.continuous = true;
 
       recognitionRef.current.onstart = () => {
         console.log("Speech recognition started:", language);
-        // Reset last segment when starting a new recognition instance
         lastFinalSegmentRef.current = "";
       };
 
@@ -56,26 +100,28 @@ const SpeechRecognitionComponent = () => {
             const transcript = event.results[i][0].transcript.trim();
     
             if (event.results[i].isFinal) {
-                // Use language-specific normalization
                 if (normalize(transcript, language) !== normalize(lastFinalSegmentRef.current, language)) {
                     newFinalTranscript += transcript + " ";
                     lastFinalSegmentRef.current = transcript;
+                    
+                    // Break long text and add lines
+                    const brokenLines = breakLongText(transcript);
+                    setTranscriptLines(prev => {
+                      const updated = [...prev, ...brokenLines];
+                      return updated.slice(-3); // Keep last 3 lines
+                    });
                 }
             } else {
                 interimTranscript += transcript + " ";
             }
         }
     
-        // Append new final transcript without losing previous sentences
         if (newFinalTranscript) {
             finalTranscriptRef.current = (finalTranscriptRef.current + " " + newFinalTranscript).trim();
         }
     
-        // Update state with final + interim transcript
         setText((finalTranscriptRef.current + " " + interimTranscript).trim());
-    };
-    
-    
+      };
 
       recognitionRef.current.onerror = (event) => {
         console.error("Speech recognition error:", event);
@@ -84,15 +130,10 @@ const SpeechRecognitionComponent = () => {
       };
 
       recognitionRef.current.onend = () => {
-        console.log("Speech recognition ended.");
         if (isListening) {
-          // For mobile (segmented mode), restart after a short delay.
-          // On desktop, continuous mode usually won't trigger onend unless there's a pause.
-          if (isMobile) {
-            setTimeout(() => {
-              startRecognitionInternal();
-            }, 300);
-          }
+          setTimeout(() => {
+            startRecognitionInternal();
+          }, 300);
         }
       };
 
@@ -104,15 +145,14 @@ const SpeechRecognitionComponent = () => {
   };
 
   const startRecognition = () => {
-    if (isListening) {
-      console.warn("Speech recognition is already running.");
-      return;
-    }
-    // Reset accumulated text
+    if (isListening) return;
+    
     finalTranscriptRef.current = "";
     setText("");
+    setTranscriptLines([]);
     setIsListening(true);
     startRecognitionInternal();
+    startSessionTimer();
   };
 
   const stopRecognition = () => {
@@ -120,58 +160,123 @@ const SpeechRecognitionComponent = () => {
     if (recognitionRef.current) {
       recognitionRef.current.stop();
     }
+    stopSessionTimer();
+  };
+
+  // Generate visual placeholders for additional context
+  const generatePlaceholders = () => {
+    return (
+      <div className="text-center opacity-20 space-y-1 py-2">
+        <div className="h-0.5 bg-white/20 mx-auto w-1/2 rounded"></div>
+        <div className="h-0.5 bg-white/10 mx-auto w-1/3 rounded"></div>
+        <div className="h-0.5 bg-white/5 mx-auto w-1/4 rounded"></div>
+      </div>
+    );
   };
 
   return (
-    <div className="flex flex-col items-center space-y-4 p-6">
-      {/* Language Selection Dropdown */}
-      <select
-        value={language}
-        onChange={(e) => setLanguage(e.target.value)}
-        className="p-2 border rounded"
-        disabled={isListening} // Prevent changing language while listening
+    <div className="min-h-screen bg-gradient-to-br from-blue-900 to-indigo-900 flex items-center justify-center p-4">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+        className="w-full max-w-md bg-white/10 backdrop-blur-xl shadow-2xl rounded-2xl p-6 border border-white/20 relative"
       >
-        <option value="en-IN">English (India)</option>
-        <option value="hi-IN">Hindi (हिन्दी)</option>
-        <option value="mr-IN">Marathi (मराठी)</option>
-        <option value="gu-IN">Gujarati (ગુજરાતી)</option>
-        <option value="ta-IN">Tamil (தமிழ்)</option>
-        <option value="bn-IN">Bengali (বাংলা)</option>
-        <option value="pa-IN">Punjabi (ਪੰਜਾਬੀ)</option>
-      </select>
+        {/* Header with Language and Duration */}
+        <div className="flex justify-between items-center mb-6">
+          <div className="flex items-center space-x-2 w-full">
+            <Globe className="text-blue-300 flex-shrink-0" size={24} />
+            <select
+              value={language}
+              onChange={(e) => setLanguage(e.target.value)}
+              className="bg-indigo-800/70 text-white p-2 rounded-lg border border-white/20 focus:ring-2 focus:ring-blue-300 transition w-full"
+              disabled={isListening}
+            >
+              <option value="en-IN">English (India)</option>
+              <option value="hi-IN">Hindi (हिन्दी)</option>
+              <option value="mr-IN">Marathi (मराठी)</option>
+              <option value="gu-IN">Gujarati (ગુજરાતી)</option>
+              <option value="ta-IN">Tamil (தமிழ்)</option>
+              <option value="bn-IN">Bengali (বাংলা)</option>
+              <option value="pa-IN">Punjabi (ਪੰਜਾਬੀ)</option>
+            </select>
+          </div>
 
-      {/* Mic Indicator (Live Feedback) */}
-      <div
-        className={`w-16 h-16 flex items-center justify-center rounded-full text-white font-bold text-lg ${
-          isListening ? "bg-red-500 animate-pulse" : "bg-gray-300"
-        }`}
-      >
-        {isListening ? "🎤" : "🔴"}
-      </div>
+          {/* Session Duration */}
+          <div className="flex items-center space-x-2 text-white ml-2">
+            <Clock className="text-blue-300" size={20} />
+            <span className="font-mono text-lg">{formatDuration(sessionDuration)}</span>
+          </div>
+        </div>
 
-      {/* Start Button */}
-      <button
-        onClick={startRecognition}
-        disabled={isListening}
-        className={`px-6 py-2 rounded text-white font-semibold transition-all ${
-          isListening ? "bg-gray-400 cursor-not-allowed" : "bg-green-500 hover:bg-green-600"
-        }`}
-      >
-        {isListening ? "Listening..." : "Start Recording"}
-      </button>
+        {/* Transcription Area */}
+        <div className="h-64 relative overflow-hidden rounded-lg mb-6">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/10 pointer-events-none z-10"></div>
+          
+          <div className="absolute inset-0 flex flex-col justify-center items-center z-20">
+            <div className="space-y-2 max-h-full overflow-hidden">
+              <AnimatePresence>
+                {transcriptLines.length === 0 ? (
+                  <motion.p 
+                    key="placeholder"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 0.5 }}
+                    className="text-center text-white/50 italic"
+                  >
+                    Start transcribing...
+                  </motion.p>
+                ) : (
+                  transcriptLines.map((line, index) => (
+                    <motion.p
+                      key={`line-${index}`}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ 
+                        opacity: index === transcriptLines.length - 1 ? 1 : 0.4, 
+                        y: 0,
+                        scale: index === transcriptLines.length - 1 ? 1.05 : 1
+                      }}
+                      transition={{ duration: 0.2 }}
+                      className="text-center text-white px-2 break-words"
+                    >
+                      {line}
+                    </motion.p>
+                  ))
+                )}
+              </AnimatePresence>
+            </div>
+            {/* Visual Placeholders */}
+            {transcriptLines.length > 0 && generatePlaceholders()}
+          </div>
+        </div>
 
-      {/* Stop Button */}
-      <button
-        onClick={stopRecognition}
-        className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 transition-all"
-      >
-        Stop Recording
-      </button>
+        {/* Control Buttons */}
+        <div className="flex space-x-4">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={startRecognition}
+            disabled={isListening}
+            className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg text-white font-semibold transition-all ${
+              isListening 
+                ? "bg-gray-600/50 cursor-not-allowed" 
+                : "bg-blue-600 hover:bg-blue-700"
+            }`}
+          >
+            <Mic size={20} />
+            <span>{isListening ? "Listening..." : "Start Transcribing"}</span>
+          </motion.button>
 
-      {/* Transcription Output */}
-      <p className="border p-4 w-96 min-h-[50px] text-center text-lg bg-gray-100 rounded">
-        {text || "Speak something..."}
-      </p>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={stopRecognition}
+            className="bg-red-500/80 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition-all flex items-center space-x-2"
+          >
+            <MicOff size={20} />
+            <span>Stop</span>
+          </motion.button>
+        </div>
+      </motion.div>
     </div>
   );
 };
