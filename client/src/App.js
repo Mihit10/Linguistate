@@ -1,7 +1,8 @@
 import './App.css';
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import SpeechRecognitionComponent from './pages/Recognition';
-
+import BrokerLogin from './pages/BrokerLogin';
+import BrokerDash from './pages/BrokerDash';
 
 function App() {
 
@@ -24,6 +25,9 @@ const RoutesWeb = () => {
       {/* {loading && <Loader />} */}
       <Routes>
         <Route path="/" element={<SpeechRecognitionComponent />} />
+        <Route path="/blogin" element={<BrokerLogin />} />
+        <Route path="/bdash" element={<BrokerDash />} />
+        
         
       </Routes>
       {/* {!isAdminRoute && <Footer />}       Conditionally render Footer */}
