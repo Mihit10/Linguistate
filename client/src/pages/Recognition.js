@@ -12,7 +12,13 @@ const SpeechRecognitionComponent = () => {
   const isMobile = /Mobi|Android/i.test(navigator.userAgent);
 
   // A helper to normalize text (remove extra spaces, lowercase, strip punctuation if desired)
-  const normalize = (str) => str.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+  const normalize = (str, lang) => {
+    if (lang.startsWith("en")) {
+        return str.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+    }
+    return str.trim(); // Keep original form for non-English languages
+};
+
 
   useEffect(() => {
     return () => {
@@ -34,7 +40,7 @@ const SpeechRecognitionComponent = () => {
       recognitionRef.current = new SpeechRecognition();
       recognitionRef.current.lang = language;
       recognitionRef.current.interimResults = true;
-      recognitionRef.current.continuous = isMobile ? false : true; // segmented mode for mobile
+      recognitionRef.current.continuous = isMobile ? true : true; // segmented mode for mobile
 
       recognitionRef.current.onstart = () => {
         console.log("Speech recognition started:", language);
@@ -44,21 +50,32 @@ const SpeechRecognitionComponent = () => {
 
       recognitionRef.current.onresult = (event) => {
         let interimTranscript = "";
-        // Process results from the event starting at resultIndex
+        let newFinalTranscript = "";
+    
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript.trim();
-          if (event.results[i].isFinal) {
-            // Only append if the normalized final result is different from the previous final segment
-            if (normalize(transcript) !== normalize(lastFinalSegmentRef.current)) {
-              finalTranscriptRef.current = (finalTranscriptRef.current + " " + transcript).trim();
-              lastFinalSegmentRef.current = transcript;
+            const transcript = event.results[i][0].transcript.trim();
+    
+            if (event.results[i].isFinal) {
+                // Use language-specific normalization
+                if (normalize(transcript, language) !== normalize(lastFinalSegmentRef.current, language)) {
+                    newFinalTranscript += transcript + " ";
+                    lastFinalSegmentRef.current = transcript;
+                }
+            } else {
+                interimTranscript += transcript + " ";
             }
-          } else {
-            interimTranscript += transcript + " ";
-          }
         }
+    
+        // Append new final transcript without losing previous sentences
+        if (newFinalTranscript) {
+            finalTranscriptRef.current = (finalTranscriptRef.current + " " + newFinalTranscript).trim();
+        }
+    
+        // Update state with final + interim transcript
         setText((finalTranscriptRef.current + " " + interimTranscript).trim());
-      };
+    };
+    
+    
 
       recognitionRef.current.onerror = (event) => {
         console.error("Speech recognition error:", event);
