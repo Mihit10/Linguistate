@@ -4,6 +4,7 @@ import SpeechRecognitionComponent from './pages/Recognition';
 import BrokerLogin from './pages/BrokerLogin';
 import BrokerDash from './pages/BrokerDash';
 import Summarizer from './pages/Summarizer';
+import ClientDash from './pages/ClientDash';
 
 function App() {
 
@@ -29,7 +30,7 @@ const RoutesWeb = () => {
         <Route path="/blogin" element={<BrokerLogin />} />
         <Route path="/bdash" element={<BrokerDash />} />
         <Route path="/summarizer" element={<Summarizer />} />
-        
+        <Route path="/clientdash" element={<ClientDash/>} />
         
       </Routes>
       {/* {!isAdminRoute && <Footer />}       Conditionally render Footer */}
