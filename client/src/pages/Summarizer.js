@@ -6,9 +6,14 @@ import {
   CardTitle 
 } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
-import { Calendar } from '../components/ui/Calendar';
+// import { Calendar } from '../components/ui/Calendar';
 import { Input } from '../components/ui/Input';
 import { Textarea } from '../components/ui/TextArea';
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
+import dayjs from 'dayjs';
+
 
 // Custom WhatsApp Icon Component
 const WhatsAppIcon = ({ className }) => (
@@ -63,10 +68,11 @@ const initialCallData = {
 
 const Summarizer = () => {
   const [callData, setCallData] = useState(initialCallData);
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(dayjs()); 
   const [selectedTime, setSelectedTime] = useState('');
   const [followupMessage, setFollowupMessage] = useState('');
   const [isCompleted, setIsCompleted] = useState(false);
+  const [value, setValue] = React.useState(dayjs('2022-04-17'));
 
   // AI-generated summary function (simulated)
   const generateSummary = () => {
@@ -118,12 +124,22 @@ Client Preferences:
           </CardHeader>
           <CardContent className="flex space-x-4">
             <div className="w-1/2">
-              <Calendar
+              {/* <Calendar
                 mode="single"
                 selected={selectedDate}
                 onSelect={setSelectedDate}
                 className="rounded-md border border-[#795548]"
-              />
+              /> */}
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <DateCalendar
+        value={selectedDate}
+        onChange={(newValue) => {
+          setValue(newValue);
+          setSelectedDate(newValue);
+        }}
+      />
+    </LocalizationProvider>
+              
             </div>
             <div className="w-1/2 space-y-4">
               <Input 
