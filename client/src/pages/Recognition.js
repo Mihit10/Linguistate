@@ -5,7 +5,7 @@ const SpeechRecognitionComponent = () => {
   const [isListening, setIsListening] = useState(false); // Tracks recording state
   const [language, setLanguage] = useState("en-IN"); // Default language is English (India)
   const recognitionRef = useRef(null); // Stores SpeechRecognition instance
-  const lastFinalTranscript = useRef(""); // Prevents duplicate final results
+  const finalTranscriptRef = useRef(""); // Stores final transcript separately
 
   useEffect(() => {
     return () => {
@@ -38,25 +38,25 @@ const SpeechRecognitionComponent = () => {
 
       recognitionRef.current.onstart = () => {
         console.log("Speech recognition started in language:", language);
-        lastFinalTranscript.current = ""; // Reset previous transcript
+        finalTranscriptRef.current = ""; // Reset final transcript
       };
 
       recognitionRef.current.onresult = (event) => {
         let interimTranscript = "";
-        let finalTranscript = lastFinalTranscript.current;
+        let finalTranscript = finalTranscriptRef.current;
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
           const transcript = event.results[i][0].transcript;
           if (event.results[i].isFinal) {
             if (!finalTranscript.includes(transcript)) {
-              finalTranscript += transcript + " "; // Append final words
+              finalTranscript += transcript + " "; // Append only new final text
             }
           } else {
-            interimTranscript += transcript + " "; // Show live words
+            interimTranscript += transcript + " "; // Live transcription
           }
         }
 
-        lastFinalTranscript.current = finalTranscript;
+        finalTranscriptRef.current = finalTranscript;
         setText(finalTranscript + interimTranscript.trim());
       };
 
@@ -66,18 +66,13 @@ const SpeechRecognitionComponent = () => {
         stopRecognition();
       };
 
-      recognitionRef.current.onnomatch = () => {
-        console.log("No speech detected.");
-        setText("No match found. Please try again.");
-      };
-
       recognitionRef.current.onend = () => {
         console.log("Speech recognition ended.");
         if (isListening) {
           console.log("Restarting speech recognition...");
           setTimeout(() => {
             if (recognitionRef.current) recognitionRef.current.start();
-          }, 500); // Small delay to prevent crash
+          }, 500); // Restart after a short delay
         }
       };
 
