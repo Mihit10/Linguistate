@@ -1,7 +1,6 @@
 import './App.css';
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
-import Hello from './components/Hello';
-import Bye from './components/Bye';
+import SpeechRecognitionComponent from './pages/Recognition';
 
 
 function App() {
@@ -24,8 +23,8 @@ const RoutesWeb = () => {
       <>
       {/* {loading && <Loader />} */}
       <Routes>
-        <Route path="/" element={<Hello />} />
-        <Route path="/bye" element={<Bye />} />
+        <Route path="/" element={<SpeechRecognitionComponent />} />
+        
       </Routes>
       {/* {!isAdminRoute && <Footer />}       Conditionally render Footer */}
       </>
