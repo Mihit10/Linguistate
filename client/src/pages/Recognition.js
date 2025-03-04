@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
 
 const SpeechRecognitionComponent = () => {
-  const [text, setText] = useState(""); // Stores full transcribed text
-  const [isListening, setIsListening] = useState(false); // Tracks recording state
-  const [language, setLanguage] = useState("en-IN"); // Default language is English (India)
-  const recognitionRef = useRef(null); // Stores SpeechRecognition instance
-  const finalTranscriptRef = useRef(""); // Stores final transcript separately
+  const [text, setText] = useState(""); // Full transcribed text
+  const [isListening, setIsListening] = useState(false);
+  const [language, setLanguage] = useState("en-IN"); // Default to English (India)
+  const recognitionRef = useRef(null);
+  const finalTranscriptRef = useRef(""); // Stores final transcript
+  const recognizedWordsSet = useRef(new Set()); // Tracks unique words
 
   useEffect(() => {
     return () => {
@@ -32,13 +33,14 @@ const SpeechRecognitionComponent = () => {
       }
 
       recognitionRef.current = new SpeechRecognition();
-      recognitionRef.current.lang = language; // Set selected language
+      recognitionRef.current.lang = language;
       recognitionRef.current.continuous = true;
-      recognitionRef.current.interimResults = true; // Show words as spoken
+      recognitionRef.current.interimResults = true;
 
       recognitionRef.current.onstart = () => {
-        console.log("Speech recognition started in language:", language);
-        finalTranscriptRef.current = ""; // Reset final transcript
+        console.log("Speech recognition started:", language);
+        finalTranscriptRef.current = "";
+        recognizedWordsSet.current.clear(); // Clear stored words
       };
 
       recognitionRef.current.onresult = (event) => {
@@ -46,13 +48,15 @@ const SpeechRecognitionComponent = () => {
         let finalTranscript = finalTranscriptRef.current;
 
         for (let i = event.resultIndex; i < event.results.length; i++) {
-          const transcript = event.results[i][0].transcript;
+          const transcript = event.results[i][0].transcript.trim();
+          
           if (event.results[i].isFinal) {
-            if (!finalTranscript.includes(transcript)) {
+            if (!recognizedWordsSet.current.has(transcript)) {
+              recognizedWordsSet.current.add(transcript); // Store unique words
               finalTranscript += transcript + " "; // Append only new final text
             }
           } else {
-            interimTranscript += transcript + " "; // Live transcription
+            interimTranscript += transcript + " "; // Show live text
           }
         }
 
@@ -72,7 +76,7 @@ const SpeechRecognitionComponent = () => {
           console.log("Restarting speech recognition...");
           setTimeout(() => {
             if (recognitionRef.current) recognitionRef.current.start();
-          }, 500); // Restart after a short delay
+          }, 1000); // Restart with a slight delay (fix for mobile browsers)
         }
       };
 
@@ -110,7 +114,7 @@ const SpeechRecognitionComponent = () => {
         <option value="pa-IN">Punjabi (ਪੰਜਾਬੀ)</option>
       </select>
 
-      {/* Mic Indicator (Live feedback) */}
+      {/* Mic Indicator */}
       <div
         className={`w-16 h-16 flex items-center justify-center rounded-full text-white font-bold text-lg ${
           isListening ? "bg-red-500 animate-pulse" : "bg-gray-300"
