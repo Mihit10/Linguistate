@@ -6,7 +6,8 @@ import BrokerDash from "./pages/BrokerDash";
 import Chat from "./pages/Chat";
 import Summarizer from "./pages/Summarizer";
 import ClientDash from "./pages/ClientDash";
-import ClientHome from './pages/ClientHome';
+import ClientHome from "./pages/ClientHome";
+import Landing from "./pages/Landing";
 
 function App() {
   return (
@@ -30,7 +31,8 @@ const RoutesWeb = () => {
         <Route path="/bdash" element={<BrokerDash />} />
         <Route path="/summarizer" element={<Summarizer />} />
         <Route path="/clientdash" element={<ClientDash />} />
-        <Route path="/clienthome" element={<ClientHome/>} />
+        <Route path="/clienthome" element={<ClientHome />} />
+        <Route path="/landing" element={<Landing />} />
 
         <Route path="/chat" element={<Chat />} />
       </Routes>
