@@ -27,6 +27,10 @@ const SpeechRecognitionComponent = ({ room, username }) => {
     console.log(messages);
   };
 
+  useEffect(() => {
+    console.log("Updated messages:", messages);
+  }, [messages]); // This runs every time messages state updates
+
   // Ensure the user joins the room when username and room are available
   useEffect(() => {
     if (room.trim() !== "" && username.trim() !== "") {
