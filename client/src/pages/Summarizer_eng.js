@@ -66,7 +66,7 @@ const initialCallData = {
   }
 };
 
-const Summarizer = () => {
+const Summarizer_eng = () => {
   const [callData, setCallData] = useState(initialCallData);
   const [selectedDate, setSelectedDate] = useState(dayjs()); 
   const [selectedTime, setSelectedTime] = useState('');
@@ -77,21 +77,22 @@ const Summarizer = () => {
   // AI-generated summary function (simulated)
   const generateSummary = () => {
     return (
-      `
-  ### **📌 मुख्य चर्चेचे मुद्दे**
-  - 🔹 क्लायंटला एक वन बीएचके प्रॉपर्टी बघायची आहे.
-  - 🔹 क्लायंटचे बजेट दीड ते दोन करोड रुपये आहे.
-  - 🔹 प्रॉपर्टी चांगली असावी अशी क्लायंटची अपेक्षा आहे.
-  
-  ### **🏡 प्रॉपर्टीची माहिती**
-  | वैशिष्ट्ये        | तपशील  |
-  |---------------|---------|
-  | 🏠 प्रॉपर्टीचा प्रकार | वन बीएचके |
-  | 📍 स्थान | नोंद केलेले नाही |
-  | 💰 किंमत | दीड ते दोन करोड रुपये |
-  | 📏 आकार | नोंद केलेले नाही |
-  | 🏗️ स्थिती | नोंद केलेले नाही |
-  `
+      `### 📌 *Key Discussion Points*  
+- 🔹 The client is looking for a 1 BHK property.  
+- 🔹 The client's budget is between ₹1.5 Crores and ₹2 Crores.  
+- 🔹 The client wants a good property and wants to plan a viewing.  
+
+### 🏡 **Property Details**  
+| Feature         | Details                |  
+|---------------|-------------------------|  
+| 🏠 Property Type | 1 BHK Apartment        |  
+| 📍 Location     | Not Mentioned          |  
+| 💰 Price       | ₹1.5 Crores - ₹2 Crores |  
+| 📏 Size | Not Mentioned           |  
+| 🏗️ Status    | Not Mentioned           |  
+
+### 📋 **Next Steps (If Discussed)**  
+- ✅ Plan a day to view the property.`
     );
   };
   
@@ -208,4 +209,4 @@ const Summarizer = () => {
   );
 };
 
-export default Summarizer;
+export default Summarizer_eng;
