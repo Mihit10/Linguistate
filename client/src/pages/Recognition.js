@@ -19,6 +19,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
   const [joined, setJoined] = useState(true);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [translatedText, setTranslatedText] = useState("");
 
   const joinRoom = () => {
     if (room.trim() !== "" && username.trim() !== "") {
@@ -37,7 +38,6 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       if (!lastMessage.textEnglish) return; // Ensure there is text to translate
 
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
-      const translatedText = "";
 
       timeoutRef.current = setTimeout(async () => {
         try {
@@ -51,9 +51,9 @@ const SpeechRecognitionComponent = ({ room, username }) => {
               }
             );
 
-            translatedText = response.data.translated_text;
+            setTranslatedText(response.data.translated_text);
           } else {
-            translatedText = lastMessage.text;
+            setTranslatedText(lastMessage.text);
           }
 
           setMessages((prevMessages) =>
