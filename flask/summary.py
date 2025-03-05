@@ -20,26 +20,53 @@ def summarize_conversation(conversations, requiredLang, broker_language, client_
             broker_msgs.append(msg["text"])
     
     # Step 2: Prepare structured prompts for AI agents
-    agent_prompt = (
-        "Your task is to summarize a conversation between a broker and a client. "
-        "The broker speaks in {broker_lang}, and the client speaks in {client_lang}. "
-        "You must generate a summary in {required_lang}. Here are the messages:\n\n"
-        "Broker's messages:\n{broker_msgs}\n\n"
-        "Client's messages:\n{client_msgs}\n\n"
-        "Ensure the summary captures key points, agreements, concerns, and any actions discussed."
-    ).format(
-        broker_lang=broker_language, client_lang=client_language,
-        required_lang=requiredLang, broker_msgs="\n".join(broker_msgs), client_msgs="\n".join(client_msgs)
-    )
-    
+    agent_prompt = f"""
+    ### Task:
+    Summarize the conversation **strictly based on the content**. Do not add or assume anything. The conversation is between a **real estate broker** and a **client**. The broker speaks in {broker_language}, and the client speaks in {client_language}. Generate a summary in {requiredLang}.  
+
+    ### **Format:**  
+    - Use **bullet points** for key details.  
+    - Present relevant information like property details, pricing, location, and requirements in a **table**.  
+    - Ensure the summary is **clear, direct, and easy to read**.  
+
+    ---
+
+    ### **Summary of Conversation**  
+
+    #### **📌 Key Discussion Points**  
+    - 🔹 [Summarized point from conversation]  
+    - 🔹 [Summarized point from conversation]  
+    - 🔹 [Summarized point from conversation]  
+
+    ---
+
+    #### **🏡 Property Details**  
+    | Feature         | Details  |
+    |---------------|---------|
+    | 🏠 Property Type | [Apartment/Villa/etc.] |
+    | 📍 Location | [Location mentioned] |
+    | 💰 Price | [Mentioned price] |
+    | 📏 Size | [Mentioned size] |
+    | 🏗️ Status | [Under Construction/Ready to Move] |
+
+    ---
+
+    #### **📋 Next Steps (If Discussed)**  
+    - ✅ [Action item discussed]  
+    - ✅ [Action item discussed]  
+
+    🚫 **Do not generate additional information. Only include what is explicitly stated in the conversation.**
+    """
+
     # Step 3: Generate summary using Groq Llama
     chat_completion = client.chat.completions.create(
         messages=[
             {"role": "system", "content": "You are a multilingual conversation summarizer."},
             {"role": "user", "content": agent_prompt}
         ],
-        model="llama-3.3-70b-versatile",
+        model="llama3-70b-8192",
     )
+
     
     return chat_completion.choices[0].message.content
 
