@@ -10,7 +10,7 @@ const bubbleTexts = [
   "మీరు వసతి శుక్రవారంను షెడ్యూల్ చేయవచ్చా?",
   "Wow, impressive! 🤩",
   "Nice to meet you! 🤝",
-  "Exciting times ahead! 🌈",
+  "Exciting times ahead! ✨",
 ];
 
 const generateBubble = () => {
