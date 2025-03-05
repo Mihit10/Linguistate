@@ -10,6 +10,8 @@ import { Button } from "../components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import SpeechRecognitionComponent from "./Recognition";
 import socket from "./socket";
+import img1 from "../img/p1.jpg";
+import img2 from "../img/p2.jpg";
 
 // SVG Icons (maintained from original code)
 const BudgetIcon = () => (
@@ -91,7 +93,7 @@ const SummaryIcon = () => (
 );
 
 const Test = () => {
-  const [isJoined, setIsJoined] = useState(false);
+  const [isJoined, setIsJoined] = useState(true);
   const [animatedText, setAnimatedText] = useState("");
   const navigate = useNavigate();
 
@@ -128,13 +130,13 @@ const Test = () => {
   const [propertySuggestions, setPropertySuggestions] = useState([
     {
       id: 1,
-      image: "/api/placeholder/300/200",
+      image: img1,
       price: "₹75 Lakhs",
       details: "2 BHK | 1,200 sq ft | Modern Kitchen",
     },
     {
       id: 2,
-      image: "/api/placeholder/300/200",
+      image: img2,
       price: "₹92 Lakhs",
       details: "2 BHK | 1,350 sq ft | Balcony View",
     },
