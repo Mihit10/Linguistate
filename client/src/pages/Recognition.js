@@ -30,6 +30,47 @@ const SpeechRecognitionComponent = ({ room, username }) => {
     console.log(messages);
   };
 
+  // useEffect(() => {
+  //   const translateLastMessage = async () => {
+  //     if (messages.length === 0) return; // Prevent running on initial render
+
+  //     const lastMessage = messages[messages.length - 1]; // Get the most recent message
+  //     if (!lastMessage.textEnglish) return; // Ensure there is text to translate
+
+  //     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+  //     timeoutRef.current = setTimeout(async () => {
+  //       try {
+  //         if (lastMessage.sender !== username) {
+  //           const response = await axios.post(
+  //             "https://macaque-awake-implicitly.ngrok-free.app/refine",
+  //             {
+  //               text: lastMessage.textEnglish,
+  //               brokerLanguage: "en-IN",
+  //               clientLanguage: language,
+  //             }
+  //           );
+
+  //           setTranslatedText(response.data.translated_text);
+  //         } else {
+  //           setTranslatedText(lastMessage.text);
+  //         }
+
+  //         setMessages((prevMessages) =>
+  //           prevMessages.map((msg) =>
+  //             msg._id === lastMessage._id ? { ...msg, translatedText } : msg
+  //           )
+  //         );
+  //       } catch (error) {
+  //         console.error("Error translating text:", error);
+  //       }
+  //     }, 1000); // 1s delay
+  //   };
+
+  //   translateLastMessage();
+  //   console.log(messages);
+  // }, [messages]);
+
   useEffect(() => {
     const translateLastMessage = async () => {
       if (messages.length === 0) return; // Prevent running on initial render
@@ -37,34 +78,32 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       const lastMessage = messages[messages.length - 1]; // Get the most recent message
       if (!lastMessage.textEnglish) return; // Ensure there is text to translate
 
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-
-      timeoutRef.current = setTimeout(async () => {
-        try {
-          if (lastMessage.sender !== username) {
-            const response = await axios.post(
-              "https://macaque-awake-implicitly.ngrok-free.app/refine",
-              {
-                text: lastMessage.textEnglish,
-                brokerLanguage: "en-IN",
-                clientLanguage: language,
-              }
-            );
-
-            setTranslatedText(response.data.translated_text);
-          } else {
-            setTranslatedText(lastMessage.text);
-          }
-
-          setMessages((prevMessages) =>
-            prevMessages.map((msg) =>
-              msg._id === lastMessage._id ? { ...msg, translatedText } : msg
-            )
+      try {
+        let translatedText;
+        if (lastMessage.sender !== username) {
+          const response = await axios.post(
+            "https://macaque-awake-implicitly.ngrok-free.app/refine",
+            {
+              text: lastMessage.textEnglish,
+              brokerLanguage: "en-IN",
+              clientLanguage: language,
+            }
           );
-        } catch (error) {
-          console.error("Error translating text:", error);
+
+          translatedText = response.data.translated_text;
+        } else {
+          translatedText = lastMessage.text;
         }
-      }, 1000); // 1s delay
+
+        // Update the latest message with translated text
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg._id === lastMessage._id ? { ...msg, translatedText } : msg
+          )
+        );
+      } catch (error) {
+        console.error("Error translating text:", error);
+      }
     };
 
     translateLastMessage();
@@ -111,9 +150,9 @@ const SpeechRecognitionComponent = ({ room, username }) => {
     };
   }, []);
   useEffect(() => {
-    console.log("🔴 Chat History:");
+    // console.log("🔴 Chat History:");
     messages.forEach((msg, index) => {
-      console.log(`${index + 1}. ${msg.sender}: ${msg.text}`);
+      // console.log(`${index + 1}. ${msg.sender}: ${msg.text}`);
     });
   }, [messages]);
 

@@ -11,7 +11,7 @@ const BrokerHome = () => {
     name: "Mihit Singasane",
     language: "English",
     specialization: "Real Estate Broker",
-    uniqueCode: "124421",
+    uniqueCode: "112211",
     email: "mihit.singasane@realestate.com",
     phone: "+91 98765 43210",
   };
@@ -142,7 +142,7 @@ const BrokerHome = () => {
           </motion.div>
         </div>
       ) : (
-        <SpeechRecognitionComponent room="124421" username="broker" />
+        <SpeechRecognitionComponent room="112211" username="broker" />
       )}
     </div>
   );
