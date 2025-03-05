@@ -8,6 +8,7 @@ import Summarizer from "./pages/Summarizer";
 import ClientDash from "./pages/ClientDash";
 import ClientHome from "./pages/ClientHome";
 import Landing from "./pages/Landing";
+import BrokerHome from "./pages/BrokerHome";
 
 function App() {
   return (
@@ -33,6 +34,7 @@ const RoutesWeb = () => {
         <Route path="/clientdash" element={<ClientDash />} />
         <Route path="/clienthome" element={<ClientHome />} />
         <Route path="/landing" element={<Landing />} />
+        <Route path="/brokerhome" element={<BrokerHome/>} />
 
         <Route path="/chat" element={<Chat />} />
       </Routes>

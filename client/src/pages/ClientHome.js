@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import SpeechRecognitionComponent from './Recognition';
+import socket from "./socket";
+
 
 const ClientHome = () => {
-  const [brokerCode, setBrokerCode] = useState('');
+  const [room, setRoom] = useState('');
   const [isCodeMatched, setIsCodeMatched] = useState(false);
   const [showTour, setShowTour] = useState(false);
   const [animatedText, setAnimatedText] = useState('');
@@ -30,9 +32,11 @@ const ClientHome = () => {
   const handleCodeSubmit = () => {
     // Implement your code matching logic here
     // This is a placeholder - replace with actual verification
-    if (brokerCode.trim() === 'BROKER123') {
+    if (room.trim() === '60942') {
       setIsCodeMatched(true);
       setShowTour(true);
+      socket.emit("updateStatus", true);
+      console.log("Broker variable updated:", true);
     } else {
       alert('Invalid Broker Code');
     }
@@ -47,7 +51,7 @@ const ClientHome = () => {
     >
       <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
         <h2 className="text-2xl font-bold mb-4 text-center text-blue-800">
-          How LangBuddy Works
+          How LangState Works
         </h2>
         <div className="space-y-4 text-gray-700">
           <div className="flex items-center space-x-3">
@@ -101,8 +105,8 @@ const ClientHome = () => {
           <div className="bg-white rounded-xl shadow-2xl p-6">
             <input 
               type="text" 
-              value={brokerCode}
-              onChange={(e) => setBrokerCode(e.target.value)}
+              value={room}
+              onChange={(e) => setRoom(e.target.value)}
               placeholder="Enter Your Broker Code" 
               className="w-full px-4 py-3 border-2 border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4"
             />
@@ -115,7 +119,8 @@ const ClientHome = () => {
           </div>
         </motion.div>
       ) : (
-        <SpeechRecognitionComponent />
+
+        <SpeechRecognitionComponent room={room} username="Vedh" />
       )}
 
       <AnimatePresence>
