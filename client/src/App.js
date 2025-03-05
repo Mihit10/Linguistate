@@ -27,14 +27,14 @@ const RoutesWeb = () => {
     <>
       {/* {loading && <Loader />} */}
       <Routes>
-        <Route path="/" element={<SpeechRecognitionComponent />} />
+        <Route path="/" element={<BrokerHome />} />
         <Route path="/blogin" element={<BrokerLogin />} />
         <Route path="/bdash" element={<BrokerDash />} />
         <Route path="/summarizer" element={<Summarizer />} />
         <Route path="/clientdash" element={<ClientDash />} />
         <Route path="/clienthome" element={<ClientHome />} />
         <Route path="/landing" element={<Landing />} />
-        <Route path="/brokerhome" element={<BrokerHome/>} />
+        <Route path="/brokerhome" element={<BrokerHome />} />
 
         <Route path="/chat" element={<Chat />} />
       </Routes>

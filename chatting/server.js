@@ -28,6 +28,8 @@ const messageSchema = new mongoose.Schema({
   room: String,
   sender: String,
   text: String,
+  textEnglish: String,
+  language: String,
   timestamp: { type: Date, default: Date.now },
 });
 const Message = mongoose.model("Message", messageSchema);

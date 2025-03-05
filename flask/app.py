@@ -8,7 +8,7 @@ CORS(app)
 @app.route('/refine', methods=['POST'])
 def get_strings():
     try:
-        print("Received request:", request.data)
+        # print("Received request:", request.data)
         data = request.json  # Get JSON data from request
         text = data.get("text")
         brokerLanguage = data.get("brokerLanguage")
