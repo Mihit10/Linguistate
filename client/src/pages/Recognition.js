@@ -37,19 +37,24 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       if (!lastMessage.textEnglish) return; // Ensure there is text to translate
 
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      const translatedText = "";
 
       timeoutRef.current = setTimeout(async () => {
         try {
-          const response = await axios.post(
-            "https://macaque-awake-implicitly.ngrok-free.app/refine",
-            {
-              text: lastMessage.textEnglish,
-              brokerLanguage: "en-IN",
-              clientLanguage: language,
-            }
-          );
+          if (lastMessage.sender !== username) {
+            const response = await axios.post(
+              "https://macaque-awake-implicitly.ngrok-free.app/refine",
+              {
+                text: lastMessage.textEnglish,
+                brokerLanguage: "en-IN",
+                clientLanguage: language,
+              }
+            );
 
-          const translatedText = response.data.translated_text;
+            translatedText = response.data.translated_text;
+          } else {
+            translatedText = lastMessage.text;
+          }
 
           setMessages((prevMessages) =>
             prevMessages.map((msg) =>
@@ -420,7 +425,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
                     : "bg-gray-700 text-gray-200 self-start mr-auto" // Align left
                 }`}
               >
-                <strong></strong> {msg.text}
+                <strong></strong> {msg.translatedTexttext}
               </div>
             ))}
           </div>
