@@ -75,6 +75,7 @@ io.on("connection", (socket) => {
         sender,
         text,
         textEnglish: translatedText,
+        language: language,
       });
       await message.save();
 
