@@ -61,11 +61,14 @@ io.on("connection", (socket) => {
 
     try {
       // Call Python endpoint for translation
-      const response = await axios.post("http://localhost:5000/refine", {
-        text: text,
-        brokerLanguage: language,
-        clientLanguage: "en-IN",
-      });
+      const response = await axios.post(
+        "https://macaque-awake-implicitly.ngrok-free.app/refine",
+        {
+          text: text,
+          brokerLanguage: language,
+          clientLanguage: "en-IN",
+        }
+      );
 
       const translatedText = response.data.translated_text || text; // Assuming response contains 'translated_text'
 

@@ -361,7 +361,7 @@ summary_client = summarize_conversation_client(
 )
 
 # Print summary in Markdown format
-print(summary_client)
+# print(summary_client)
 
 
 summary_broker = summarize_conversation_broker(
@@ -371,7 +371,7 @@ summary_broker = summarize_conversation_broker(
 )
 
 # Print summary in Markdown format
-print(summary_broker)
+# print(summary_broker)
 
 # models = genai.list_models()
 # for model in models:

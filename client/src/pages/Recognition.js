@@ -36,11 +36,14 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       if (!lastMessage.textEnglish) return; // Ensure there is text to translate
 
       try {
-        const response = await axios.post("http://localhost:5000/refine", {
-          text: lastMessage.textEnglish,
-          brokerLanguage: "en-IN",
-          clientLanguage: language,
-        });
+        const response = await axios.post(
+          "https://macaque-awake-implicitly.ngrok-free.app/refine",
+          {
+            text: lastMessage.textEnglish,
+            brokerLanguage: "en-IN",
+            clientLanguage: language,
+          }
+        );
 
         const translatedText = response.data.translated_text;
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import io from "socket.io-client";
 import socket from "./socket";
 
-// const socket = io("http://localhost:5000"); // Connect to backend
+// const socket = io("https://macaque-awake-implicitly.ngrok-free.app"); // Connect to backend
 
 const Chat = () => {
   const [room, setRoom] = useState("");
