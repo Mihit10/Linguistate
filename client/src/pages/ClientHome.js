@@ -12,7 +12,7 @@ const ClientHome = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const welcomeMessage =
-    "LangState: Breaking Language Barriers, Connecting Conversations";
+    "LinguiState: Breaking Language Barriers, Connecting Conversations";
 
   // Color Palette
   const colors = {
@@ -73,7 +73,7 @@ const ClientHome = () => {
           color: colors.primary 
         }} 
       />
-      <p 
+      <p className="mt-4"
         style={{ color: colors.primary }}
       >
         Generating Summary...
@@ -101,7 +101,7 @@ const ClientHome = () => {
           className="text-2xl font-bold mb-4 text-center"
           style={{ color: colors.primary }}
         >
-          How LangState Works
+          How LinguiState Works
         </h2>
         <div className="space-y-4" style={{ color: colors.text }}>
           {[
