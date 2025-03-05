@@ -76,6 +76,7 @@ Summarize the conversation **strictly based on the content**. Do not add or assu
     # Step 3: Generate summary using Google Gemini
     model = genai.GenerativeModel("gemini-1.5-pro-latest")  # Using Gemini Pro model
     response = model.generate_content(agent_prompt)
+    print('model used')
 
     # Step 4: Return formatted summary
     return response.text
@@ -138,6 +139,7 @@ Summarize the conversation **strictly based on content**. **Do not add or assume
     # Step 3: Generate summary using Google Gemini
     model = genai.GenerativeModel("gemini-2.0-flash")  # Using Gemini Pro model
     response = model.generate_content(agent_prompt)
+    print('model used')
 
     # Step 4: Return formatted summary
     return response.text
