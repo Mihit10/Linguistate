@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { useNavigate } from "react-router-dom";
+import SpeechRecognitionComponent from './Recognition';
 
 // SVG Icons
 const BudgetIcon = () => (
@@ -130,7 +131,7 @@ const BrokerDash = () => {
 
       <div className="grid grid-cols-12 gap-6 flex-grow">
         {/* Left Side: Real-Time Chat */}
-        <div className="col-span-8 grid grid-rows-2 gap-6">
+        <div className="col-span-8 grid grid-rows-2 gap-0">
           {/* Transcription Section */}
           <Card 
             className="bg-white shadow-lg rounded-xl overflow-hidden"
