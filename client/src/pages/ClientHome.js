@@ -12,7 +12,7 @@ const ClientHome = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showSummary, setShowSummary] = useState(false);
   const welcomeMessage =
-    "LangState: Breaking Language Barriers, Connecting Conversations";
+    "LinguiState: Breaking Language Barriers, Connecting Conversations";
 
   // Color Palette
   const colors = {
@@ -53,15 +53,6 @@ const ClientHome = () => {
       alert("Invalid Broker Code");
     }
   };
-
-  const handleStopTranscription = () => {
-    setIsLoading(true);
-    
-    setTimeout(() => {
-      setIsLoading(false);
-      setShowSummary(true);
-    }, 3000);
-  };
   
   const handleGetSummary = () => {
     setIsLoading(true);
@@ -70,6 +61,25 @@ const ClientHome = () => {
       setShowSummary(true);
     }, 3000);
   };
+
+  // Simplified Loading Component
+  const SummaryLoading = () => (
+    <div className="flex items-center justify-center mt-4">
+      <Loader2 
+        className="mr-2 animate-spin" 
+        style={{ 
+          height: '1.5rem', 
+          width: '1.5rem', 
+          color: colors.primary 
+        }} 
+      />
+      <p className="mt-4"
+        style={{ color: colors.primary }}
+      >
+        Generating Summary...
+      </p>
+    </div>
+  );
 
   const TourModal = () => (
     <motion.div
@@ -91,7 +101,7 @@ const ClientHome = () => {
           className="text-2xl font-bold mb-4 text-center"
           style={{ color: colors.primary }}
         >
-          How LangState Works
+          How LinguiState Works
         </h2>
         <div className="space-y-4" style={{ color: colors.text }}>
           {[
@@ -135,36 +145,10 @@ const ClientHome = () => {
     </motion.div>
   );
 
-  const LoadingSpinner = () => (
-    <div 
-      className="flex flex-col items-center justify-center min-h-screen"
-      style={{ 
-        background: `linear-gradient(to bottom right, ${colors.background}, ${colors.accent})` 
-      }}
-    >
-      <Loader2 
-        className="animate-spin" 
-        style={{ 
-          height: '3rem', 
-          width: '3rem', 
-          color: colors.primary 
-        }} 
-      />
-      <p 
-        className="mt-4 text-lg"
-        style={{ color: colors.primary }}
-      >
-        Generating Summary...
-      </p>
-    </div>
-  );
 
   const SummaryComponent = () => (
     <div 
-      className="min-h-screen p-6"
-      style={{ 
-        background: `linear-gradient(to bottom right, ${colors.background}, ${colors.accent})` 
-      }}
+      className="min-h-screen p-6 mt-4"
     >
       <div 
         className="mx-auto rounded-xl shadow-lg p-6"
@@ -323,7 +307,7 @@ const ClientHome = () => {
         </div>
       ) : (
         <>
-          {isLoading ? <LoadingSpinner /> : null}
+          
           <SpeechRecognitionComponent room={room} username="client" />
           
           <button 
@@ -337,7 +321,8 @@ const ClientHome = () => {
             Get Summary
           </button>
           
-          {showSummary && <SummaryComponent />}
+          {isLoading && <SummaryLoading />}
+          {showSummary && !isLoading && <SummaryComponent />}
         </>
       )}
 
