@@ -149,209 +149,239 @@ Summarize the conversation **strictly based on content**. **Do not add or assume
 # Example usage
 json_data = [{
   "_id": {
-    "$oid": "67c7cc0c22d6cf82ecdcd609"
+    "$oid": "67c80319e4ecbfe6ada08d53"
   },
-  "room": "123456",
+  "room": "256545",
+  "sender": "client",
+  "text": "हेलो कैसे हो आप",
+  "textEnglish": "Hello how are you",
+  "language": "hi-IN",
+  "timestamp": {
+    "$date": "2025-03-05T07:54:01.605Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67c80321e4ecbfe6ada08d55"
+  },
+  "room": "256545",
   "sender": "broker",
-  "text": "તમારું નામ શું છે",
-  "textEnglish": "What is your name",
+  "text": "હું એકદમ મજામાં તમે કેમ છો",
+  "textEnglish": "I am enjoying a lot how are you",
+  "language": "gu-IN",
   "timestamp": {
-    "$date": "2025-03-05T03:59:08.867Z"
+    "$date": "2025-03-05T07:54:09.465Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "67c7cc0f22d6cf82ecdcd60b"
+    "$oid": "67c8032de4ecbfe6ada08d57"
   },
-  "room": "123456",
-  "sender": "client",
-  "text": "हॅलो",
-  "textEnglish": "Hello",
-  "timestamp": {
-    "$date": "2025-03-05T03:59:11.130Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "67c7cc1122d6cf82ecdcd60d"
-  },
-  "room": "123456",
-  "sender": "client",
-  "text": "माझं नाव माहित आहे",
-  "textEnglish": "My name is known",
-  "timestamp": {
-    "$date": "2025-03-05T03:59:13.965Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "67c7cc1422d6cf82ecdcd60f"
-  },
-  "room": "123456",
+  "room": "256545",
   "sender": "broker",
-  "text": "તમે કેમ છો",
-  "textEnglish": "How are you",
+  "text": "નયા પ્રોપર્ટી મિલા હૈ",
+  "textEnglish": "New Property Found",
+  "language": "gu-IN",
   "timestamp": {
-    "$date": "2025-03-05T03:59:16.316Z"
+    "$date": "2025-03-05T07:54:21.463Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "67c7cc1822d6cf82ecdcd611"
+    "$oid": "67c8032de4ecbfe6ada08d59"
   },
-  "room": "123456",
-  "sender": "client",
-  "text": "मी खूप चांगला आहे तुम्ही बोला",
-  "textEnglish": "I am fine you talk",
-  "timestamp": {
-    "$date": "2025-03-05T03:59:20.731Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "67c7cc1c22d6cf82ecdcd613"
-  },
-  "room": "123456",
+  "room": "256545",
   "sender": "broker",
-  "text": "? હું પણ એકદમ ઠીક",
-  "textEnglish": "I'm also perfectly fine",
+  "text": "? મેં ભી બઢિયા મેને સુના હૈ આપકો છાને મેં",
+  "textEnglish": "મેં ભી બઢિયા મેને સુના હૈ આપકો છાને મેં",
+  "language": "en-IN",
   "timestamp": {
-    "$date": "2025-03-05T03:59:24.418Z"
+    "$date": "2025-03-05T07:54:21.698Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "67c7cc2222d6cf82ecdcd615"
+    "$oid": "67c80339e4ecbfe6ada08d5b"
   },
-  "room": "123456",
+  "room": "256545",
   "sender": "client",
-  "text": "तर मला एक प्रॉपर्टी बघायची होती वन बीएचके",
-  "textEnglish": "But I wanted to see a property one BHK",
+  "text": "नया फ्लैट मिला है",
+  "textEnglish": "Got a new flat",
+  "language": "hi-IN",
   "timestamp": {
-    "$date": "2025-03-05T03:59:30.346Z"
+    "$date": "2025-03-05T07:54:33.853Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "67c7cc2922d6cf82ecdcd617"
+    "$oid": "67c8033ce4ecbfe6ada08d5d"
   },
-  "room": "123456",
+  "room": "256545",
+  "sender": "client",
+  "text": "मैं भी बढ़िया मैंने सुना है आपके थाने में",
+  "textEnglish": "मैं भी बढ़िया मैंने सुना है आपके थाने में",
+  "language": "en-IN",
+  "timestamp": {
+    "$date": "2025-03-05T07:54:36.245Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67c8034ae4ecbfe6ada08d5f"
+  },
+  "room": "256545",
   "sender": "broker",
-  "text": "તમને ત્યારે જોવી છે પ્રોપર્ટી",
-  "textEnglish": "You have to see the property then",
+  "text": "હા મને એક નવી પ્રોપર્ટી મળી છે",
+  "textEnglish": "Yes I have got a new property",
+  "language": "gu-IN",
   "timestamp": {
-    "$date": "2025-03-05T03:59:37.435Z"
+    "$date": "2025-03-05T07:54:50.244Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "67c7cc2c22d6cf82ecdcd619"
+    "$oid": "67c8034fe4ecbfe6ada08d61"
   },
-  "room": "123456",
-  "sender": "client",
-  "text": "बघायची आहे",
-  "textEnglish": "Want to see",
-  "timestamp": {
-    "$date": "2025-03-05T03:59:40.438Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "67c7cc3222d6cf82ecdcd61b"
-  },
-  "room": "123456",
+  "room": "256545",
   "sender": "broker",
   "text": "તમારું બજેટ શું છે",
   "textEnglish": "What is your budget",
+  "language": "gu-IN",
   "timestamp": {
-    "$date": "2025-03-05T03:59:46.877Z"
+    "$date": "2025-03-05T07:54:55.617Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "67c7cc3822d6cf82ecdcd61d"
+    "$oid": "67c80360e4ecbfe6ada08d63"
   },
-  "room": "123456",
+  "room": "256545",
   "sender": "client",
-  "text": "माझं बजेट दीड ते दोन करोड पर्यंत आहे",
-  "textEnglish": "My budget is up to one and a half to two crores",
+  "text": "मेरा बजट डेट से 2 करोड़ का है",
+  "textEnglish": "My budget is 2 crores from the date",
+  "language": "hi-IN",
   "timestamp": {
-    "$date": "2025-03-05T03:59:52.058Z"
+    "$date": "2025-03-05T07:55:12.366Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "67c7cc3d22d6cf82ecdcd61f"
+    "$oid": "67c8037ee4ecbfe6ada08d65"
   },
-  "room": "123456",
+  "room": "256545",
   "sender": "broker",
-  "text": "તમને ડર જોઈએ છે",
-  "textEnglish": "You should be feared",
+  "text": "સમાવી",
+  "textEnglish": "Inclusion",
+  "language": "gu-IN",
   "timestamp": {
-    "$date": "2025-03-05T03:59:57.521Z"
+    "$date": "2025-03-05T07:55:42.358Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "67c7cc4322d6cf82ecdcd621"
+    "$oid": "67c80380e4ecbfe6ada08d67"
   },
-  "room": "123456",
-  "sender": "client",
-  "text": "फक्त चांगली असायला पाहिजे",
-  "textEnglish": "It should just be good",
-  "timestamp": {
-    "$date": "2025-03-05T04:00:03.242Z"
-  },
-  "__v": 0
-},
-{
-  "_id": {
-    "$oid": "67c7cc5322d6cf82ecdcd623"
-  },
-  "room": "123456",
+  "room": "256545",
   "sender": "broker",
-  "text": "છે એ વન બીએચકે છે",
-  "textEnglish": "Is Van BHKE",
+  "text": "રહેજા અપાર્ટમેન્ટમાં 1.7 કરોડમાં બધું",
+  "textEnglish": "રહેજા અપાર્ટમેન્ટમાં 1.7 કરોડમાં બધું",
+  "language": "en-IN",
   "timestamp": {
-    "$date": "2025-03-05T04:00:19.933Z"
+    "$date": "2025-03-05T07:55:44.350Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "67c7cc5b22d6cf82ecdcd625"
+    "$oid": "67c80380e4ecbfe6ada08d69"
   },
-  "room": "123456",
-  "sender": "client",
-  "text": "प्लॅन करूया एक दिवस",
-  "textEnglish": "Let's plan for a day",
+  "room": "256545",
+  "sender": "broker",
+  "text": "મારા પાસે તમારી માટે એટ પરફેક્ટ યાદ છે",
+  "textEnglish": "I have an absolutely perfect memory for you",
+  "language": "en-IN",
   "timestamp": {
-    "$date": "2025-03-05T04:00:27.330Z"
+    "$date": "2025-03-05T07:55:44.699Z"
   },
   "__v": 0
 },
 {
   "_id": {
-    "$oid": "67c7cc6a22d6cf82ecdcd627"
+    "$oid": "67c803a1e4ecbfe6ada08d6b"
   },
-  "room": "123456",
+  "room": "256545",
   "sender": "client",
-  "text": "ठीक आहे चालेल",
-  "textEnglish": "That's fine, will manage",
+  "text": "अरे वह क्या हम सैटरडे को मिलते हैं वह",
+  "textEnglish": "अरे वह क्या हम शनिवार को मिलते हैं वह",
+  "language": "en-IN",
   "timestamp": {
-    "$date": "2025-03-05T04:00:42.566Z"
+    "$date": "2025-03-05T07:56:17.412Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67c803a2e4ecbfe6ada08d6d"
+  },
+  "room": "256545",
+  "sender": "client",
+  "text": "फ्लैट देख सकते हैं",
+  "textEnglish": "Can see the flat",
+  "language": "hi-IN",
+  "timestamp": {
+    "$date": "2025-03-05T07:56:18.979Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67c803b9e4ecbfe6ada08d6f"
+  },
+  "room": "256545",
+  "sender": "broker",
+  "text": "ભાગે તો અમે શનિવારે મળીએ",
+  "textEnglish": "ભાગે તો અમે શનિવારે મળીએ",
+  "language": "gu-IN",
+  "timestamp": {
+    "$date": "2025-03-05T07:56:41.937Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67c803f7e4ecbfe6ada08d71"
+  },
+  "room": "256545",
+  "sender": "client",
+  "text": "ठीक है मिलते हैं",
+  "textEnglish": "ठीक है मिलते हैं",
+  "language": "hi-IN",
+  "timestamp": {
+    "$date": "2025-03-05T07:57:43.379Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67c803f7e4ecbfe6ada08d73"
+  },
+  "room": "256545",
+  "sender": "client",
+  "text": "ठीक है मिलते हैं",
+  "textEnglish": "ठीक है मिलते हैं",
+  "language": "hi-IN",
+  "timestamp": {
+    "$date": "2025-03-05T07:57:43.479Z"
   },
   "__v": 0
 }]
@@ -359,7 +389,7 @@ json_data = [{
 summary_client = summarize_conversation_client(
     conversations=json_data,  
     broker_language="Gu-IN", 
-    client_language="mr-IN"
+    client_language="hi-IN"
 )
 
 # Print summary in Markdown format
@@ -369,7 +399,7 @@ summary_client = summarize_conversation_client(
 summary_broker = summarize_conversation_broker(
     conversations=json_data,  
     broker_language="Gu-IN", 
-    client_language="mr-IN"
+    client_language="hi-IN"
 )
 
 # Print summary in Markdown format

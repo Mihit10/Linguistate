@@ -29,7 +29,7 @@ const RoutesWeb = () => {
     <>
       {/* {loading && <Loader />} */}
       <Routes>
-        <Route path="/" element={<BrokerHome />} />
+        <Route path="/" element={<Landing />} />
         <Route path="/blogin" element={<BrokerLogin />} />
         <Route path="/bdash" element={<BrokerDash />} />
         <Route path="/summarizer" element={<Summarizer />} />
