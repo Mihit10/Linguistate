@@ -369,7 +369,7 @@ const Test = () => {
                   )
                 )}
               </div>
-              <Button className="w-full mt-3 bg-[#8B4513] text-white text-xs">
+              <Button className="w-full mt-3 bg-[#102C57] text-white text-xs">
                 Book Slot
               </Button>
             </CardContent>
@@ -391,13 +391,13 @@ const Test = () => {
                 className="w-full h-32 p-2 border rounded text-xs"
                 placeholder="Auto-generated summary will appear here..."
                 style={{
-                  backgroundColor: "#F5F0E6",
+                  backgroundColor: "#102C57",
                   borderColor: "#8B4513",
                   color: "#5D4037",
                 }}
               />
               <Button
-                className="w-full mt-3 bg-[#8B4513] text-white text-xs"
+                className="w-full mt-3 bg-[#FEFAF6] text-[#102C57] text-xs"
                 onClick={() => navigate("/summarizer")}
               >
                 Generate Summary
