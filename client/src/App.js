@@ -37,8 +37,9 @@ const RoutesWeb = () => {
         <Route path="/clientdash" element={<ClientDash />} />
         <Route path="/clienthome" element={<ClientHome />} />
         <Route path="/landing" element={<Landing />} />
-        <Route path="/brokerhome" element={<BrokerHome />} />
-         <Route path="/test" element={<Test />} /> 
+        {/* <Route path="/brokerhome" element={<BrokerHome />} /> */}
+        <Route path="/brokerhome" element={<Test />} />
+        <Route path="/test" element={<Test />} />
 
         <Route path="/chat" element={<Chat />} />
       </Routes>
