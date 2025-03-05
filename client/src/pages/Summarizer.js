@@ -75,25 +75,36 @@ const Summarizer = () => {
   const [value, setValue] = React.useState(dayjs('2022-04-17'));
 
   // AI-generated summary function (simulated)
-  const generateSummary = () => {
-    return (
-      `
-  ### **📌 मुख्य चर्चेचे मुद्दे**
-  - 🔹 क्लायंटला एक वन बीएचके प्रॉपर्टी बघायची आहे.
-  - 🔹 क्लायंटचे बजेट दीड ते दोन करोड रुपये आहे.
-  - 🔹 प्रॉपर्टी चांगली असावी अशी क्लायंटची अपेक्षा आहे.
+  const SummaryComponent = () => (
+    <div className="w-full">
+      <div className="mx-auto">
+        <h2 className="text-2xl font-bold text-blue-900 mb-4">📌 ब्रोकर के लिए त्वरित सारांश</h2>
+        <div className="markdown">
+          
+          <h3 className="text-xl font-semibold text-blue-800 mb-3">ग्राहक की आवश्यकताएं</h3>
+          <ul className="list-disc pl-5 mb-4 text-gray-700">
+            <li> <strong>संपत्ति का प्रकार:</strong> घर</li>
+            <li> <strong>स्थान प्राथमिकता:</strong> मलाड</li>
+            <li> <strong>बजट सीमा:</strong> दो करोड़</li>
+            <li> <strong>आकार प्राथमिकता:</strong> दो या तीन कमरे</li>
+          </ul>
   
-  ### **🏡 प्रॉपर्टीची माहिती**
-  | वैशिष्ट्ये        | तपशील  |
-  |---------------|---------|
-  | 🏠 प्रॉपर्टीचा प्रकार | वन बीएचके |
-  | 📍 स्थान | नोंद केलेले नाही |
-  | 💰 किंमत | दीड ते दोन करोड रुपये |
-  | 📏 आकार | नोंद केलेले नाही |
-  | 🏗️ स्थिती | नोंद केलेले नाही |
-  `
-    );
-  };
+          <h3 className="text-xl font-semibold text-blue-800 mb-3">ग्राहक की रुचि और चिंताएं</h3>
+          <ul className="list-disc pl-5 mb-4 text-gray-700">
+            <li> मलाड में संपत्ति में रुचि</li>
+          </ul>
+  
+          <h3 className="text-xl font-semibold text-blue-800 mb-3">अंतिम निर्णय और कार्रवाई आइटम</h3>
+          <ul className="list-disc pl-5 mb-4 text-gray-700">
+            <li>✅ <strong>ग्राहक साइट पर आना चाहता है?</strong> हाँ (दिनांक: शुक्रवार, रविवार को 2 बजे मिलने का समय था लेकिन ब्रोकर की बहन की शादी के कारण शुक्रवार को मिलने की बात हुई)</li>
+            <li>✅ <strong>अगली फॉलो-अप तिथि:</strong> शुक्रवार</li>
+            <li>✅ <strong>अतिरिक्त जानकारी आवश्यक:</strong> कोई नहीं</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+  
   
 
   // WhatsApp message generator
@@ -106,7 +117,7 @@ const Summarizer = () => {
   };
 
   return (
-    <div className="bg-[#D7CCC8] min-h-screen p-6">
+    <div className="bg-[#D7CCC8] min-h-screen p-4">
       <div className="max-w-4xl mx-auto space-y-6">
         {/* AI Summary Card */}
         <Card className="bg-[#EFEBE9] shadow-lg border-[#795548] border">
@@ -116,52 +127,62 @@ const Summarizer = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <pre className="whitespace-pre-wrap text-[#4E342E]"><Markdown>{generateSummary()}</Markdown></pre>
+            {/* <pre className="whitespace-pre-wrap text-[#4E342E]"><Markdown>{generateSummary()}</Markdown></pre> */}
+            <SummaryComponent />
           </CardContent>
         </Card>
 
         {/* Follow-up Scheduler */}
-        <Card className="bg-[#EFEBE9] shadow-lg border-[#795548] border">
-          <CardHeader>
-            <CardTitle className="text-xl font-semibold text-[#3E2723]">
-              Follow-up Scheduler
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="flex space-x-4">
-            <div className="w-1/2">
-              {/* <Calendar
-                mode="single"
-                selected={selectedDate}
-                onSelect={setSelectedDate}
-                className="rounded-md border border-[#795548]"
-              /> */}
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <DateCalendar
-        value={selectedDate}
-        onChange={(newValue) => {
-          setValue(newValue);
-          setSelectedDate(newValue);
-        }}
+        <Card className="bg-[#EFEBE9] shadow-lg border-[#795548] border w-full max-w-md mx-auto">
+  <CardHeader>
+    <CardTitle className="text-xl font-semibold text-[#3E2723] text-center">
+      Follow-up Scheduler
+    </CardTitle>
+  </CardHeader>
+  <CardContent className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 p-4">
+    <div className="w-full md:w-1/2">
+      <LocalizationProvider dateAdapter={AdapterDayjs}>
+        <DateCalendar
+          value={selectedDate}
+          onChange={(newValue) => {
+            setValue(newValue);
+            setSelectedDate(newValue);
+          }}
+          className="w-full"
+          sx={{
+            '& .MuiPickersCalendarHeader-root': {
+              color: '#3E2723',
+            },
+            '& .MuiDayCalendar-weekContainer': {
+              justifyContent: 'center',
+            },
+            '& .MuiButtonBase-root': {
+              color: '#3E2723',
+            },
+            '& .Mui-selected': {
+              backgroundColor: '#795548 !important',
+              color: '#EFEBE9 !important',
+            }
+          }}
+        />
+      </LocalizationProvider>
+    </div>
+    <div className="w-full md:w-1/2 flex flex-col space-y-4">
+      <Input 
+        type="time" 
+        value={selectedTime}
+        onChange={(e) => setSelectedTime(e.target.value)}
+        className="w-full border-[#795548] focus:border-[#795548] focus:ring-[#795548]"
       />
-    </LocalizationProvider>
-              
-            </div>
-            <div className="w-1/2 space-y-4">
-              <Input 
-                type="time" 
-                value={selectedTime}
-                onChange={(e) => setSelectedTime(e.target.value)}
-                className="w-full border-[#795548]"
-              />
-              <Button 
-                variant="outline" 
-                className="w-full bg-[#BCAAA4] text-[#3E2723] hover:bg-[#A1887F]"
-              >
-                Schedule Reminder
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+      <Button 
+        variant="outline" 
+        className="w-full bg-[#BCAAA4] text-[#3E2723] hover:bg-[#A1887F] transition-colors duration-300"
+      >
+        Schedule Reminder
+      </Button>
+    </div>
+  </CardContent>
+</Card>
 
         {/* WhatsApp Follow-up */}
         <Card className="bg-[#EFEBE9] shadow-lg border-[#795548] border">
