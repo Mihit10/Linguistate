@@ -17,7 +17,8 @@ def get_strings():
         if not all([text, brokerLanguage, clientLanguage]):
             return jsonify({"error": "All three strings are required"}), 400
 
-        return refine_and_translate(text, brokerLanguage, clientLanguage)
+        translatedText = refine_and_translate(text, brokerLanguage, clientLanguage)
+        return jsonify({"translated_text": translatedText})
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500

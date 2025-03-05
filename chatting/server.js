@@ -3,6 +3,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const axios = require("axios");
 
 const app = express();
 const server = http.createServer(app);
@@ -42,6 +43,7 @@ io.on("connection", (socket) => {
     // Send past messages
     const messages = await Message.find({ room });
     socket.emit("loadMessages", messages);
+    console.log("messages sent");
   });
 
   socket.on("updateStatus", (status) => {
@@ -50,12 +52,42 @@ io.on("connection", (socket) => {
     console.log("broadcast");
   });
 
-  socket.on("sendMessage", async ({ room, sender, text }) => {
-    console.log(`Message received from ${sender}: ${text}`);
-    const message = new Message({ room, sender, text });
-    await message.save();
+  socket.on("sendMessage", async ({ room, sender, text, language }) => {
+    console.log(
+      `Message received from ${sender}: ${text}    lang: ${language}`
+    );
 
-    io.to(room).emit("receiveMessage", message);
+    try {
+      // Call Python endpoint for translation
+      const response = await axios.post("http://localhost:5000/refine", {
+        text: text,
+        brokerLanguage: language,
+        clientLanguage: "en-IN",
+      });
+
+      const translatedText = response.data.translated_text || text; // Assuming response contains 'translated_text'
+
+      // Save both original and translated text
+      const message = new Message({
+        room,
+        sender,
+        text,
+        textEnglish: translatedText,
+      });
+      await message.save();
+
+      // Emit original and translated message
+      io.to(room).emit("receiveMessage", {
+        ...message.toObject(),
+        textEnglish: translatedText,
+      });
+    } catch (error) {
+      console.error("Error translating message:", error.message);
+    }
+    // const message = new Message({ room, sender, text });
+    // await message.save();
+
+    // io.to(room).emit("receiveMessage", message);
   });
 
   socket.on("disconnect", () => {

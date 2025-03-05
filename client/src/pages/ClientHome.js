@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import SpeechRecognitionComponent from './Recognition';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import SpeechRecognitionComponent from "./Recognition";
 import socket from "./socket";
 
-
 const ClientHome = () => {
-  const [room, setRoom] = useState('');
+  const [room, setRoom] = useState("");
   const [isCodeMatched, setIsCodeMatched] = useState(false);
   const [showTour, setShowTour] = useState(false);
-  const [animatedText, setAnimatedText] = useState('');
-  const welcomeMessage = "LangState: Breaking Language Barriers, Connecting Conversations";
+  const [animatedText, setAnimatedText] = useState("");
+  const welcomeMessage =
+    "LangState: Breaking Language Barriers, Connecting Conversations";
 
   // Typing animation effect
   useEffect(() => {
-    let currentText = '';
+    let currentText = "";
     let index = 0;
-    
+
     const typingEffect = setInterval(() => {
       if (index < welcomeMessage.length) {
         currentText += welcomeMessage[index];
@@ -32,18 +32,18 @@ const ClientHome = () => {
   const handleCodeSubmit = () => {
     // Implement your code matching logic here
     // This is a placeholder - replace with actual verification
-    if (room.trim() === '60942') {
+    if (room.trim() === "22") {
       setIsCodeMatched(true);
       setShowTour(true);
       socket.emit("updateStatus", true);
       console.log("Broker variable updated:", true);
     } else {
-      alert('Invalid Broker Code');
+      alert("Invalid Broker Code");
     }
   };
 
   const TourModal = () => (
-    <motion.div 
+    <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
@@ -55,21 +55,27 @@ const ClientHome = () => {
         </h2>
         <div className="space-y-4 text-gray-700">
           <div className="flex items-center space-x-3">
-            <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</span>
+            <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+              1
+            </span>
             <p>Ensure you're on a call with your broker</p>
           </div>
           <div className="flex items-center space-x-3">
-            <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</span>
+            <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+              2
+            </span>
             <p>Click "Start Transcribe" when ready</p>
           </div>
           <div className="flex items-center space-x-3">
-            <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</span>
+            <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
+              3
+            </span>
             <p>Watch real-time translated conversation</p>
           </div>
         </div>
         <div className="mt-6 flex justify-center">
-          <button 
-            onClick={() => setShowTour(false)} 
+          <button
+            onClick={() => setShowTour(false)}
             className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Start Transcribing
@@ -81,7 +87,7 @@ const ClientHome = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 flex flex-col justify-center items-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -92,25 +98,26 @@ const ClientHome = () => {
           <span className="animate-pulse">|</span>
         </h1>
         <p className="text-xl text-blue-700 max-w-2xl mx-auto">
-          Seamless communication across language barriers with real-time translation
+          Seamless communication across language barriers with real-time
+          translation
         </p>
       </motion.div>
 
       {!isCodeMatched ? (
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           className="w-full max-w-md"
         >
           <div className="bg-white rounded-xl shadow-2xl p-6">
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={room}
               onChange={(e) => setRoom(e.target.value)}
-              placeholder="Enter Your Broker Code" 
+              placeholder="Enter Your Broker Code"
               className="w-full px-4 py-3 border-2 border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4"
             />
-            <button 
+            <button
               onClick={handleCodeSubmit}
               className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
             >
@@ -119,13 +126,10 @@ const ClientHome = () => {
           </div>
         </motion.div>
       ) : (
-
-        <SpeechRecognitionComponent room={room} username="Vedh" />
+        <SpeechRecognitionComponent room={room} username="client" />
       )}
 
-      <AnimatePresence>
-        {showTour && <TourModal />}
-      </AnimatePresence>
+      <AnimatePresence>{showTour && <TourModal />}</AnimatePresence>
     </div>
   );
 };

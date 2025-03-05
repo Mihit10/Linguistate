@@ -1,20 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import SpeechRecognitionComponent from './Recognition';
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import SpeechRecognitionComponent from "./Recognition";
 import socket from "./socket";
-
 
 const BrokerHome = () => {
   const [isJoined, setIsJoined] = useState(false);
-  const [animatedText, setAnimatedText] = useState('');
-  
+  const [animatedText, setAnimatedText] = useState("");
+
   const brokerInfo = {
     name: "Mihit Singasane",
     language: "English",
     specialization: "Real Estate Broker",
-    uniqueCode: "60942",
+    uniqueCode: "22",
     email: "mihit.singasane@realestate.com",
-    phone: "+91 98765 43210"
+    phone: "+91 98765 43210",
   };
 
   useEffect(() => {
@@ -25,19 +24,18 @@ const BrokerHome = () => {
       console.log("✅ WebSocket Connected!", socket.id);
     });
     socket.on("statusChanged", (status) => {
-        console.log("Broker variable updated:", status);
-        setIsJoined(status);
-      });
-      
+      console.log("Broker variable updated:", status);
+      setIsJoined(status);
+    });
   }, []);
 
   const welcomeMessage = "Waiting for Your Client to Join";
 
   // Typing animation effect
   useEffect(() => {
-    let currentText = '';
+    let currentText = "";
     let index = 0;
-    
+
     const typingEffect = setInterval(() => {
       if (index < welcomeMessage.length) {
         currentText += welcomeMessage[index];
@@ -54,7 +52,7 @@ const BrokerHome = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-indigo-300 flex flex-col">
       {/* Broker Profile Section */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -95,7 +93,9 @@ const BrokerHome = () => {
             {/* Unique Code */}
             <div className="mt-4 md:mt-0">
               <div className="bg-indigo-50 border-2 border-indigo-200 rounded-lg px-6 py-4 text-center">
-                <span className="block text-sm text-indigo-600 mb-2">Unique Session Code</span>
+                <span className="block text-sm text-indigo-600 mb-2">
+                  Unique Session Code
+                </span>
                 <span className="text-3xl font-bold text-indigo-900">
                   {brokerInfo.uniqueCode}
                 </span>
@@ -112,10 +112,11 @@ const BrokerHome = () => {
             <span className="animate-pulse">|</span>
           </h1>
           <p className="text-xl text-indigo-700 max-w-2xl mx-auto mb-8 text-center">
-            Share your unique code with your client to start the translation session
+            Share your unique code with your client to start the translation
+            session
           </p>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="w-full max-w-md"
@@ -131,7 +132,7 @@ const BrokerHome = () => {
                   <div className="w-2 h-2 bg-indigo-500 rounded-full animate-pulse delay-300"></div>
                 </div>
               </div>
-              <button 
+              <button
                 disabled
                 className="w-full bg-indigo-300 text-indigo-700 py-3 rounded-lg cursor-not-allowed font-semibold"
               >
@@ -141,10 +142,7 @@ const BrokerHome = () => {
           </motion.div>
         </div>
       ) : (
-        <SpeechRecognitionComponent 
-          room="60942" 
-          username="Mihit" 
-        />
+        <SpeechRecognitionComponent room="22" username="broker" />
       )}
     </div>
   );

@@ -4,21 +4,19 @@ import { Mic, MicOff, Globe, Clock } from "lucide-react";
 import socket from "./socket";
 
 const SpeechRecognitionComponent = ({ room, username }) => {
-
-  const [text, setText] = useState(""); 
+  const [text, setText] = useState("");
   const [transcriptLines, setTranscriptLines] = useState([]);
   const [isListening, setIsListening] = useState(false);
   const [language, setLanguage] = useState("en-IN");
   const [sessionDuration, setSessionDuration] = useState(0);
   const recognitionRef = useRef(null);
-  const finalTranscriptRef = useRef(""); 
-  const lastFinalSegmentRef = useRef(""); 
+  const finalTranscriptRef = useRef("");
+  const lastFinalSegmentRef = useRef("");
   const sessionIntervalRef = useRef(null);
 
   const [joined, setJoined] = useState(true);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-
 
   const joinRoom = () => {
     if (room.trim() !== "" && username.trim() !== "") {
@@ -28,7 +26,6 @@ const SpeechRecognitionComponent = ({ room, username }) => {
     }
     console.log(messages);
   };
-
 
   // Ensure the user joins the room when username and room are available
   useEffect(() => {
@@ -42,7 +39,6 @@ const SpeechRecognitionComponent = ({ room, username }) => {
   useEffect(() => {
     console.log(transcriptLines);
   }, [transcriptLines]);
-
 
   // socket wala backend
   useEffect(() => {
@@ -71,20 +67,38 @@ const SpeechRecognitionComponent = ({ room, username }) => {
     };
   }, []);
 
-
   useEffect(() => {
     if (transcriptLines.length > 0) {
-      const latestMessage = transcriptLines[transcriptLines.length - 1]; 
-      console.log("Sending:", { room, sender: username, text: latestMessage });
-      socket.emit("sendMessage", { room, sender: username, text: latestMessage });
+      const latestMessage = transcriptLines[transcriptLines.length - 1];
+      console.log("Sending:", {
+        room,
+        sender: username,
+        text: latestMessage,
+        language: language,
+      });
+      socket.emit("sendMessage", {
+        room,
+        sender: username,
+        text: latestMessage,
+        language: language,
+      });
     }
   }, [transcriptLines]);
-  
 
   const sendMessage = () => {
     if (message.trim() !== "") {
-      console.log("Sending:", { room, sender: username, text: message });
-      socket.emit("sendMessage", { room, sender: username, text: message });
+      console.log("Sending:", {
+        room,
+        sender: username,
+        text: message,
+        language: language,
+      });
+      socket.emit("sendMessage", {
+        room,
+        sender: username,
+        text: message,
+        language: language,
+      });
       setMessage("");
     }
   };
@@ -92,43 +106,54 @@ const SpeechRecognitionComponent = ({ room, username }) => {
   // Optimize text breaking
   const breakLongText = useCallback((text, maxLength = 40) => {
     if (text.length <= maxLength) return [text];
-    
-    const words = text.split(' ');
-    const lines = [];
-    let currentLine = '';
 
-    words.forEach(word => {
+    const words = text.split(" ");
+    const lines = [];
+    let currentLine = "";
+
+    words.forEach((word) => {
       if ((currentLine + word).length <= maxLength) {
-        currentLine += (currentLine ? ' ' : '') + word;
+        currentLine += (currentLine ? " " : "") + word;
       } else {
         if (currentLine) {
           lines.push(currentLine);
-          socket.emit("sendMessage", { room, sender: username, text: currentLine });
+          socket.emit("sendMessage", {
+            room,
+            sender: username,
+            text: message,
+            language: language,
+          });
         }
         currentLine = word;
       }
     });
 
-
     if (currentLine) {
       lines.push(currentLine);
-      console.log(currentLine);}
+      console.log(currentLine);
+    }
     return lines;
   }, []);
 
-  // A helper to normalize text 
+  // A helper to normalize text
   const normalize = (str, lang) => {
     if (lang.startsWith("en")) {
-        return str.replace(/[^\w\s]|_/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+      return str
+        .replace(/[^\w\s]|_/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
     }
-    return str.trim(); 
+    return str.trim();
   };
 
   // Format duration
   const formatDuration = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs
+      .toString()
+      .padStart(2, "0")}`;
   };
 
   useEffect(() => {
@@ -142,7 +167,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
   const startSessionTimer = () => {
     setSessionDuration(0);
     sessionIntervalRef.current = setInterval(() => {
-      setSessionDuration(prev => prev + 1);
+      setSessionDuration((prev) => prev + 1);
     }, 1000);
   };
 
@@ -157,7 +182,8 @@ const SpeechRecognitionComponent = ({ room, username }) => {
   // Optimized recognition internal method
   const startRecognitionInternal = () => {
     try {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SpeechRecognition =
+        window.SpeechRecognition || window.webkitSpeechRecognition;
       if (!SpeechRecognition) {
         setText("Speech recognition not supported in this browser.");
         return;
@@ -176,31 +202,38 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       recognitionRef.current.onresult = (event) => {
         let interimTranscript = "";
         let newFinalTranscript = "";
-    
+
         for (let i = event.resultIndex; i < event.results.length; i++) {
-            const transcript = event.results[i][0].transcript.trim();
-    
-            if (event.results[i].isFinal) {
-                if (normalize(transcript, language) !== normalize(lastFinalSegmentRef.current, language)) {
-                    newFinalTranscript += transcript + " ";
-                    lastFinalSegmentRef.current = transcript;
-                    
-                    // Break long text and add lines
-                    const brokenLines = breakLongText(transcript);
-                    setTranscriptLines(prev => {
-                      const updated = [...prev, ...brokenLines];
-                      return updated.slice(-3); // Keep last 3 lines
-                    });
-                }
-            } else {
-                interimTranscript += transcript + " ";
+          const transcript = event.results[i][0].transcript.trim();
+
+          if (event.results[i].isFinal) {
+            if (
+              normalize(transcript, language) !==
+              normalize(lastFinalSegmentRef.current, language)
+            ) {
+              newFinalTranscript += transcript + " ";
+              lastFinalSegmentRef.current = transcript;
+
+              // Break long text and add lines
+              const brokenLines = breakLongText(transcript);
+              setTranscriptLines((prev) => {
+                const updated = [...prev, ...brokenLines];
+                return updated.slice(-3); // Keep last 3 lines
+              });
             }
+          } else {
+            interimTranscript += transcript + " ";
+          }
         }
-    
+
         if (newFinalTranscript) {
-            finalTranscriptRef.current = (finalTranscriptRef.current + " " + newFinalTranscript).trim();
+          finalTranscriptRef.current = (
+            finalTranscriptRef.current +
+            " " +
+            newFinalTranscript
+          ).trim();
         }
-    
+
         setText((finalTranscriptRef.current + " " + interimTranscript).trim());
       };
 
@@ -227,7 +260,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
 
   const startRecognition = () => {
     if (isListening) return;
-    
+
     finalTranscriptRef.current = "";
     setText("");
     setTranscriptLines([]);
@@ -257,7 +290,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
@@ -286,19 +319,21 @@ const SpeechRecognitionComponent = ({ room, username }) => {
           {/* Session Duration */}
           <div className="flex items-center space-x-2 text-white ml-2">
             <Clock className="text-blue-300" size={20} />
-            <span className="font-mono text-lg">{formatDuration(sessionDuration)}</span>
+            <span className="font-mono text-lg">
+              {formatDuration(sessionDuration)}
+            </span>
           </div>
         </div>
 
         {/* Transcription Area */}
         <div className="h-64 relative overflow-hidden rounded-lg mb-6">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/10 pointer-events-none z-10"></div>
-          
+
           <div className="absolute inset-0 flex flex-col justify-center items-center z-20">
             <div className="space-y-2 max-h-full overflow-hidden">
               <AnimatePresence>
                 {transcriptLines.length === 0 ? (
-                  <motion.p 
+                  <motion.p
                     key="placeholder"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 0.5 }}
@@ -311,10 +346,10 @@ const SpeechRecognitionComponent = ({ room, username }) => {
                     <motion.p
                       key={`line-${index}`}
                       initial={{ opacity: 0, y: 20 }}
-                      animate={{ 
-                        opacity: index === transcriptLines.length - 1 ? 1 : 0.4, 
+                      animate={{
+                        opacity: index === transcriptLines.length - 1 ? 1 : 0.4,
                         y: 0,
-                        scale: index === transcriptLines.length - 1 ? 1.05 : 1
+                        scale: index === transcriptLines.length - 1 ? 1.05 : 1,
                       }}
                       transition={{ duration: 0.2 }}
                       className="text-center text-white px-2 break-words"
@@ -338,8 +373,8 @@ const SpeechRecognitionComponent = ({ room, username }) => {
             onClick={startRecognition}
             disabled={isListening}
             className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg text-white font-semibold transition-all ${
-              isListening 
-                ? "bg-gray-600/50 cursor-not-allowed" 
+              isListening
+                ? "bg-gray-600/50 cursor-not-allowed"
                 : "bg-blue-600 hover:bg-blue-700"
             }`}
           >
