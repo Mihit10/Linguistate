@@ -405,24 +405,23 @@ const SpeechRecognitionComponent = ({ room, username }) => {
         </div> */}
   
         {/* Chat History Section */}
-        <div className="-mt-2 w-full bg-gray-800 p-4 rounded-lg shadow-lg max-h-64 overflow-y-auto">
-          <h2 className="text-white font-semibold text-lg mb-2">Chat History</h2>
-          <div className="space-y-2">
-            {messages.map((msg, index) => (
-              <div
-              key={index}
-              className={`p-2 rounded-lg max-w-[75%] ${
-                msg.sender === username
-                  ? "bg-blue-500 text-white self-end ml-auto" // Align right
-                  : "bg-gray-700 text-gray-200 self-start mr-auto" // Align left
-              }`}
-              >
-                <strong></strong> {msg.text}
-              </div>
-            ))}
-          </div>
-        </div>
-  
+<div className="-mt-2 w-full bg-[#5D4037] p-6 rounded-lg shadow-lg max-h-80 overflow-y-auto">
+  <h2 className="text-[#cfaa9d] font-semibold text-lg mb-3">Chat History</h2>
+  <div className="space-y-3">
+    {messages.map((msg, index) => (
+      <div
+        key={index}
+        className={`p-3 rounded-lg max-w-[80%] text-sm ${
+          msg.sender === username
+            ? "bg-[#8D6E63] text-white self-end ml-auto" // Align right with brown tone
+            : "bg-[#3E2723] text-[#D7CCC8] self-start mr-auto" // Align left with dark brown
+        }`}
+      >
+        <strong ></strong> {msg.text}
+      </div>
+    ))}
+  </div>
+</div>
         {/* Control Buttons */}
         <div className="flex space-x-4 mt-4">
           <motion.button

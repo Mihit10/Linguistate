@@ -9,6 +9,7 @@ import ClientDash from "./pages/ClientDash";
 import ClientHome from "./pages/ClientHome";
 import Landing from "./pages/Landing";
 import BrokerHome from "./pages/BrokerHome";
+import Test from "./pages/Test";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ const RoutesWeb = () => {
         <Route path="/clienthome" element={<ClientHome />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/brokerhome" element={<BrokerHome />} />
+         <Route path="/test" element={<Test />} /> 
 
         <Route path="/chat" element={<Chat />} />
       </Routes>
