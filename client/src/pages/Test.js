@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import SpeechRecognitionComponent from "./Recognition";
 import socket from "./socket";
 
-// SVG Icons (from BrokerDash.js)
+// SVG Icons (maintained from original code)
 const BudgetIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -171,10 +171,10 @@ const Test = () => {
 
   return (
     <div
-      className="min-h-screen p-4 bg-[#F5F0E6] flex flex-col space-y-4"
-      style={{ fontFamily: "'Inter', sans-serif" }}
+      className="min-h-screen p-4 bg-[#F5F0E6] flex flex-col space-y-4 container mx-auto"
+      style={{ fontFamily: "'Inter', sans-serif", maxWidth: "1440px" }}
     >
-      {/* Broker Profile Section */}
+      {/* Broker Profile Section - Improved Responsiveness */}
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -182,39 +182,41 @@ const Test = () => {
         className="w-full bg-white shadow-md rounded-lg"
       >
         <div className="max-w-6xl mx-auto px-4 py-4">
-          <div className="flex flex-col md:flex-row items-center space-x-0 md:space-x-6">
-            {/* Avatar */}
-            <div className="relative">
-              <div className="w-24 h-24 bg-indigo-500 text-white rounded-full flex items-center justify-center text-4xl font-bold ring-4 ring-indigo-300 shadow-md">
-                {brokerInfo.name.charAt(0)}
+          <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
+            {/* Avatar - Centered on Mobile */}
+            <div className="flex flex-col items-center md:block">
+              <div className="relative">
+                <div className="w-24 h-24 bg-indigo-500 text-white rounded-full flex items-center justify-center text-4xl font-bold ring-4 ring-indigo-300 shadow-md">
+                  {brokerInfo.name.charAt(0)}
+                </div>
+                <div className="absolute bottom-0 right-0 bg-green-500 w-5 h-5 rounded-full border-2 border-white"></div>
               </div>
-              <div className="absolute bottom-0 right-0 bg-green-500 w-5 h-5 rounded-full border-2 border-white"></div>
             </div>
 
-            {/* Broker Details */}
+            {/* Broker Details - Centered on Mobile */}
             <div className="text-center md:text-left flex-grow">
               <h2 className="text-2xl font-bold text-indigo-900 mb-1">
                 {brokerInfo.name}
               </h2>
               <div className="space-y-1 text-indigo-700">
                 <p className="text-md">{brokerInfo.specialization}</p>
-                <div className="flex items-center justify-center md:justify-start space-x-2">
-                  <span className="bg-indigo-100 px-2 py-1 rounded-full text-xs">
+                <div className="flex flex-wrap justify-center md:justify-start space-x-2">
+                  <span className="bg-indigo-100 px-2 py-1 rounded-full text-xs mb-1">
                     Languages: {brokerInfo.language}
                   </span>
                   <span className="bg-green-100 px-2 py-1 rounded-full text-xs text-green-800">
                     Available
                   </span>
                 </div>
-                <div className="flex items-center justify-center md:justify-start space-x-2 text-xs text-gray-600">
+                <div className="flex flex-col md:flex-row items-center justify-center md:justify-start space-y-1 md:space-y-0 md:space-x-2 text-xs text-gray-600">
                   <span>{brokerInfo.email}</span>
                   <span>{brokerInfo.phone}</span>
                 </div>
               </div>
             </div>
 
-            {/* Unique Code */}
-            <div>
+            {/* Unique Code - Full Width on Mobile */}
+            <div className="w-full md:w-auto">
               <div className="bg-indigo-50 border-2 border-indigo-200 rounded-lg px-4 py-3 text-center">
                 <span className="block text-xs text-indigo-600 mb-1">
                   Unique Session Code
@@ -228,13 +230,14 @@ const Test = () => {
         </div>
       </motion.div>
 
+      {/* Rest of the component remains the same, with minor responsive adjustments */}
       {!isJoined ? (
         <div className="flex-grow flex flex-col justify-center items-center p-4">
-          <h1 className="text-2xl md:text-3xl font-extrabold text-indigo-900 mb-3">
+          <h1 className="text-2xl md:text-3xl font-extrabold text-indigo-900 mb-3 text-center">
             {animatedText}
             <span className="animate-pulse">|</span>
           </h1>
-          <p className="text-lg text-indigo-700 max-w-2xl mx-auto mb-6 text-center">
+          <p className="text-lg text-indigo-700 max-w-2xl mx-auto mb-6 text-center px-4">
             Share your unique code with your client to start the translation
             session
           </p>
@@ -242,7 +245,7 @@ const Test = () => {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="w-full max-w-md"
+            className="w-full max-w-md px-4"
           >
             <div className="bg-white rounded-xl shadow-xl p-5">
               <div className="text-center mb-3">
@@ -265,15 +268,14 @@ const Test = () => {
           </motion.div>
         </div>
       ) : (
-        <div className="grid grid-cols-12 gap-4 flex-grow">
-          {/* Left Side: Real-Time Chat and Speech Recognition */}
-          <div className="col-span-8 space-y-4">
-            {/* Speech Recognition Component */}
-            <SpeechRecognitionComponent room="251545" username="broker" />
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-4 flex-grow">
+          {/* Left Side: Real-Time Chat and Speech Recognition - Full Width on Mobile */}
+          <div className="md:col-span-8 space-y-4">
+            <SpeechRecognitionComponent room="112233" username="broker" />
           </div>
 
-          {/* Right Side: Customer Preferences */}
-          <div className="col-span-4">
+          {/* Right Side: Customer Preferences - Full Width on Mobile */}
+          <div className="md:col-span-4">
             <Card
               className="bg-white shadow-md rounded-lg"
               style={{ borderColor: "#8B4513" }}
@@ -301,13 +303,13 @@ const Test = () => {
         </div>
       )}
 
-      {/* Bottom Section: Property Suggestions */}
+      {/* Bottom Section: Property Suggestions - Grid on Mobile */}
       {isJoined && (
         <div className="bg-white rounded-lg shadow-md p-4">
           <h2 className="text-xl font-bold text-[#5D4037] mb-3">
             Property Suggestions
           </h2>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {propertySuggestions.map((property) => (
               <Card
                 key={property.id}
@@ -319,14 +321,14 @@ const Test = () => {
                   className="w-full h-40 object-cover"
                 />
                 <CardContent className="p-3">
-                  <div className="flex justify-between items-center mb-2">
+                  <div className="flex flex-col md:flex-row justify-between items-center mb-2 space-y-2 md:space-y-0">
                     <h3
                       className="text-lg font-bold"
                       style={{ color: "#8B4513" }}
                     >
                       {property.price}
                     </h3>
-                    <Button className="bg-[#27AE60] text-white text-xs px-3 py-2">
+                    <Button className="bg-[#27AE60] text-white text-xs px-3 py-2 w-full md:w-auto">
                       Send Details
                     </Button>
                   </div>
@@ -338,9 +340,9 @@ const Test = () => {
         </div>
       )}
 
-      {/* Bottom Section: Calendar and Conversation Summary */}
+      {/* Bottom Section: Calendar and Conversation Summary - Stacked on Mobile */}
       {isJoined && (
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Meeting Scheduler */}
           <Card
             className="bg-white shadow-md rounded-lg"
