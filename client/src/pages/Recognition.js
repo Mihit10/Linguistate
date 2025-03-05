@@ -14,6 +14,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
   const finalTranscriptRef = useRef("");
   const lastFinalSegmentRef = useRef("");
   const sessionIntervalRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   const [joined, setJoined] = useState(true);
   const [messages, setMessages] = useState([]);
@@ -34,6 +35,8 @@ const SpeechRecognitionComponent = ({ room, username }) => {
 
       const lastMessage = messages[messages.length - 1]; // Get the most recent message
       if (!lastMessage.textEnglish) return; // Ensure there is text to translate
+
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
       timeoutRef.current = setTimeout(async () => {
         try {
