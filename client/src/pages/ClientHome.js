@@ -9,7 +9,7 @@ const ClientHome = () => {
   const [showTour, setShowTour] = useState(false);
   const [animatedText, setAnimatedText] = useState("");
   const welcomeMessage =
-    "LangState: Breaking Language Barriers, Connecting Conversations";
+    "Linguistate: Breaking Language Barriers, Connecting Conversations";
 
   // Typing animation effect
   useEffect(() => {
@@ -51,7 +51,7 @@ const ClientHome = () => {
     >
       <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
         <h2 className="text-2xl font-bold mb-4 text-center text-blue-800">
-          How LangState Works
+          How Linguistate Works
         </h2>
         <div className="space-y-4 text-gray-700">
           <div className="flex items-center space-x-3">
