@@ -16,11 +16,11 @@ const ClientHome = () => {
 
   // Color Palette
   const colors = {
-    background: '#FEFAF6',
-    primary: '#102C57',
-    secondary: '#DAC0A3',
-    accent: '#EADBC8',
-    text: '#102C57'
+    background: "#FEFAF6",
+    primary: "#102C57",
+    secondary: "#DAC0A3",
+    accent: "#EADBC8",
+    text: "#102C57",
   };
 
   // Typing animation effect
@@ -44,7 +44,7 @@ const ClientHome = () => {
   const handleCodeSubmit = () => {
     // Implement your code matching logic here
     // This is a placeholder - replace with actual verification
-    if (room.trim() === "185265") {
+    if (room.trim() === "364656") {
       setIsCodeMatched(true);
       setShowTour(true);
       socket.emit("updateStatus", true);
@@ -53,7 +53,7 @@ const ClientHome = () => {
       alert("Invalid Broker Code");
     }
   };
-  
+
   const handleGetSummary = () => {
     setIsLoading(true);
     setTimeout(() => {
@@ -65,17 +65,15 @@ const ClientHome = () => {
   // Simplified Loading Component
   const SummaryLoading = () => (
     <div className="flex items-center justify-center mt-4">
-      <Loader2 
-        className="mr-2 animate-spin" 
-        style={{ 
-          height: '1.5rem', 
-          width: '1.5rem', 
-          color: colors.primary 
-        }} 
+      <Loader2
+        className="mr-2 animate-spin"
+        style={{
+          height: "1.5rem",
+          width: "1.5rem",
+          color: colors.primary,
+        }}
       />
-      <p className="mt-4"
-        style={{ color: colors.primary }}
-      >
+      <p className="mt-4" style={{ color: colors.primary }}>
         Generating Summary...
       </p>
     </div>
@@ -87,17 +85,17 @@ const ClientHome = () => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
       className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 p-4"
-      style={{ backgroundColor: 'rgba(16, 44, 87, 0.3)' }}
+      style={{ backgroundColor: "rgba(16, 44, 87, 0.3)" }}
     >
-      <div 
+      <div
         className="rounded-2xl p-6 max-w-md w-full shadow-2xl"
-        style={{ 
-          backgroundColor: colors.background, 
+        style={{
+          backgroundColor: colors.background,
           borderColor: colors.primary,
-          borderWidth: 2
+          borderWidth: 2,
         }}
       >
-        <h2 
+        <h2
           className="text-2xl font-bold mb-4 text-center"
           style={{ color: colors.primary }}
         >
@@ -106,18 +104,15 @@ const ClientHome = () => {
         <div className="space-y-4" style={{ color: colors.text }}>
           {[
             "Ensure you're on a call with your broker",
-            "Click \"Start Transcribe\" when ready",
-            "Watch real-time translated conversation"
+            'Click "Start Transcribe" when ready',
+            "Watch real-time translated conversation",
           ].map((step, index) => (
-            <div 
-              key={index} 
-              className="flex items-center space-x-3"
-            >
-              <span 
+            <div key={index} className="flex items-center space-x-3">
+              <span
                 className="rounded-full w-8 h-8 flex items-center justify-center font-bold"
-                style={{ 
-                  backgroundColor: colors.primary, 
-                  color: colors.background 
+                style={{
+                  backgroundColor: colors.primary,
+                  color: colors.background,
                 }}
               >
                 {index + 1}
@@ -134,8 +129,8 @@ const ClientHome = () => {
               backgroundColor: colors.primary,
               color: colors.background,
               hover: {
-                backgroundColor: colors.secondary
-              }
+                backgroundColor: colors.secondary,
+              },
             }}
           >
             Start Transcribing
@@ -145,20 +140,17 @@ const ClientHome = () => {
     </motion.div>
   );
 
-
   const SummaryComponent = () => (
-    <div 
-      className="min-h-screen p-6 mt-4"
-    >
-      <div 
+    <div className="min-h-screen p-6 mt-4">
+      <div
         className="mx-auto rounded-xl shadow-lg p-6"
-        style={{ 
+        style={{
           backgroundColor: colors.background,
-          maxWidth: '42rem',
-          color: colors.text
+          maxWidth: "42rem",
+          color: colors.text,
         }}
       >
-        <h2 
+        <h2
           className="text-2xl font-bold mb-4"
           style={{ color: colors.primary }}
         >
@@ -166,40 +158,37 @@ const ClientHome = () => {
         </h2>
         <div className="markdown">
           {/* Summary content remains the same */}
-          <h3 
+          <h3
             className="text-xl font-semibold mb-3"
             style={{ color: colors.primary }}
           >
             📌 મુખ્ય ચર્ચા બિંદુઓ
           </h3>
-          <ul 
-            className="list-disc pl-5 mb-4"
-            style={{ color: colors.text }}
-          >
+          <ul className="list-disc pl-5 mb-4" style={{ color: colors.text }}>
             <li>🔹 ગ્રાહક બે કરોડ રૂપિયા સુધીનું ઘર શોધી રહ્યા છે.</li>
             <li>🔹 ગ્રાહકને મલાડમાં બે કે ત્રણ રૂમનું ઘર જોઈએ છે.</li>
             <li>🔹 બ્રોકર પાસે મલાડમાં બે નવી પ્રોપર્ટી ઉપલબ્ધ છે.</li>
           </ul>
 
-          <h3 
+          <h3
             className="text-xl font-semibold mb-3"
             style={{ color: colors.primary }}
           >
             🏡 પ્રોપર્ટી વિગતો
           </h3>
-          <table 
+          <table
             className="w-full border-collapse mb-4"
             style={{ borderColor: colors.secondary }}
           >
             <thead>
               <tr style={{ backgroundColor: colors.accent }}>
-                <th 
+                <th
                   className="border p-2 text-left"
                   style={{ borderColor: colors.secondary }}
                 >
                   વિશેષતા
                 </th>
-                <th 
+                <th
                   className="border p-2 text-left"
                   style={{ borderColor: colors.secondary }}
                 >
@@ -213,16 +202,16 @@ const ClientHome = () => {
                 ["📍 સ્થાન", "મલાડ"],
                 ["💰 કિંમત", "બે કરોડ સુધી"],
                 ["📏 કદ", "બે કે ત્રણ રૂમ"],
-                ["🏗️ સ્થિતિ", "ઉલ્લેખ નથી"]
+                ["🏗️ સ્થિતિ", "ઉલ્લેખ નથી"],
               ].map(([feature, detail], index) => (
                 <tr key={index}>
-                  <td 
+                  <td
                     className="border p-2"
                     style={{ borderColor: colors.secondary }}
                   >
                     {feature}
                   </td>
-                  <td 
+                  <td
                     className="border p-2"
                     style={{ borderColor: colors.secondary }}
                   >
@@ -233,16 +222,13 @@ const ClientHome = () => {
             </tbody>
           </table>
 
-          <h3 
+          <h3
             className="text-xl font-semibold mb-3"
             style={{ color: colors.primary }}
           >
             📋 આગળના પગલાં
           </h3>
-          <ul 
-            className="list-disc pl-5 mb-4"
-            style={{ color: colors.text }}
-          >
+          <ul className="list-disc pl-5 mb-4" style={{ color: colors.text }}>
             <li>✅ ગ્રાહક અને બ્રોકર શુક્રવારે મળશે.</li>
           </ul>
         </div>
@@ -251,10 +237,10 @@ const ClientHome = () => {
   );
 
   return (
-    <div 
+    <div
       className="min-h-screen flex flex-col justify-center items-center p-4"
-      style={{ 
-        background: `linear-gradient(to bottom right, ${colors.background}, ${colors.accent})` 
+      style={{
+        background: `linear-gradient(to bottom right, ${colors.background}, ${colors.accent})`,
       }}
     >
       <motion.div
@@ -263,17 +249,14 @@ const ClientHome = () => {
         transition={{ duration: 0.8 }}
         className="text-center mb-12"
       >
-        <h1 
+        <h1
           className="text-3xl md:text-5xl font-extrabold mb-4"
           style={{ color: colors.primary }}
         >
           {animatedText}
           <span className="animate-pulse">|</span>
         </h1>
-        <p 
-          className="text-xl max-w-2xl mx-auto"
-          style={{ color: colors.text }}
-        >
+        <p className="text-xl max-w-2xl mx-auto" style={{ color: colors.text }}>
           Seamless communication across language barriers with real-time
           translation
         </p>
@@ -291,15 +274,15 @@ const ClientHome = () => {
               backgroundColor: colors.background,
               borderColor: colors.primary,
               borderWidth: 2,
-              color: colors.text
+              color: colors.text,
             }}
           />
-          <button 
-            onClick={handleCodeSubmit} 
+          <button
+            onClick={handleCodeSubmit}
             className="w-full py-3 rounded-lg"
             style={{
               backgroundColor: colors.primary,
-              color: colors.background
+              color: colors.background,
             }}
           >
             Connect with Broker
@@ -307,20 +290,19 @@ const ClientHome = () => {
         </div>
       ) : (
         <>
-          
           <SpeechRecognitionComponent room={room} username="client" />
-          
-          <button 
-            onClick={handleGetSummary} 
+
+          <button
+            onClick={handleGetSummary}
             className="mt-4 px-4 py-2 rounded-lg"
             style={{
               backgroundColor: colors.primary,
-              color: colors.background
+              color: colors.background,
             }}
           >
             Get Summary
           </button>
-          
+
           {isLoading && <SummaryLoading />}
           {showSummary && !isLoading && <SummaryComponent />}
         </>
@@ -331,4 +313,4 @@ const ClientHome = () => {
   );
 };
 
-export default ClientHome;  
+export default ClientHome;
