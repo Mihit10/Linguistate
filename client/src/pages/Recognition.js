@@ -426,7 +426,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-start justify-center p-2">
+    <div className=" flex items-start justify-center p-2">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
