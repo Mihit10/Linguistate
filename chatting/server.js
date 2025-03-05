@@ -38,11 +38,16 @@ io.on("connection", (socket) => {
   socket.on("joinRoom", async ({ room }) => {
     console.log(`User joined room: ${room}`);
     socket.join(room);
-    console.log(`User joined room: ${room}`);
 
     // Send past messages
     const messages = await Message.find({ room });
     socket.emit("loadMessages", messages);
+  });
+
+  socket.on("updateStatus", (status) => {
+    brokerVariable = status;
+    socket.broadcast.emit("statusChanged", status);
+    console.log("broadcast");
   });
 
   socket.on("sendMessage", async ({ room, sender, text }) => {
@@ -62,5 +67,5 @@ app.get("/", (req, res) => {
   res.send("Socket.io server is running.");
 });
 
-const PORT = 5000;
+const PORT = 5001;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
