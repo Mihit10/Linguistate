@@ -2,14 +2,26 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import SpeechRecognitionComponent from "./Recognition";
 import socket from "./socket";
+import { Loader2 } from "lucide-react";
 
 const ClientHome = () => {
   const [room, setRoom] = useState("");
   const [isCodeMatched, setIsCodeMatched] = useState(false);
   const [showTour, setShowTour] = useState(false);
   const [animatedText, setAnimatedText] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [showSummary, setShowSummary] = useState(false);
   const welcomeMessage =
     "LangState: Breaking Language Barriers, Connecting Conversations";
+
+  // Color Palette
+  const colors = {
+    background: '#FEFAF6',
+    primary: '#102C57',
+    secondary: '#DAC0A3',
+    accent: '#EADBC8',
+    text: '#102C57'
+  };
 
   // Typing animation effect
   useEffect(() => {
@@ -30,8 +42,6 @@ const ClientHome = () => {
   }, []);
 
   const handleCodeSubmit = () => {
-    // Implement your code matching logic here
-    // This is a placeholder - replace with actual verification
     if (room.trim() === "251545") {
       setIsCodeMatched(true);
       setShowTour(true);
@@ -42,41 +52,79 @@ const ClientHome = () => {
     }
   };
 
+  const handleStopTranscription = () => {
+    setIsLoading(true);
+    
+    setTimeout(() => {
+      setIsLoading(false);
+      setShowSummary(true);
+    }, 3000);
+  };
+  
+  const handleGetSummary = () => {
+    setIsLoading(true);
+    setTimeout(() => {
+      setIsLoading(false);
+      setShowSummary(true);
+    }, 3000);
+  };
+
   const TourModal = () => (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.9 }}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30 p-4"
+      style={{ backgroundColor: 'rgba(16, 44, 87, 0.3)' }}
     >
-      <div className="bg-white rounded-xl p-6 max-w-md w-full shadow-2xl">
-        <h2 className="text-2xl font-bold mb-4 text-center text-blue-800">
+      <div 
+        className="rounded-2xl p-6 max-w-md w-full shadow-2xl"
+        style={{ 
+          backgroundColor: colors.background, 
+          borderColor: colors.primary,
+          borderWidth: 2
+        }}
+      >
+        <h2 
+          className="text-2xl font-bold mb-4 text-center"
+          style={{ color: colors.primary }}
+        >
           How LangState Works
         </h2>
-        <div className="space-y-4 text-gray-700">
-          <div className="flex items-center space-x-3">
-            <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
-              1
-            </span>
-            <p>Ensure you're on a call with your broker</p>
-          </div>
-          <div className="flex items-center space-x-3">
-            <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
-              2
-            </span>
-            <p>Click "Start Transcribe" when ready</p>
-          </div>
-          <div className="flex items-center space-x-3">
-            <span className="bg-blue-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">
-              3
-            </span>
-            <p>Watch real-time translated conversation</p>
-          </div>
+        <div className="space-y-4" style={{ color: colors.text }}>
+          {[
+            "Ensure you're on a call with your broker",
+            "Click \"Start Transcribe\" when ready",
+            "Watch real-time translated conversation"
+          ].map((step, index) => (
+            <div 
+              key={index} 
+              className="flex items-center space-x-3"
+            >
+              <span 
+                className="rounded-full w-8 h-8 flex items-center justify-center font-bold"
+                style={{ 
+                  backgroundColor: colors.primary, 
+                  color: colors.background 
+                }}
+              >
+                {index + 1}
+              </span>
+              <p>{step}</p>
+            </div>
+          ))}
         </div>
         <div className="mt-6 flex justify-center">
           <button
             onClick={() => setShowTour(false)}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-6 py-2 rounded-lg transition-colors"
+            style={{
+              backgroundColor: colors.primary,
+              color: colors.background,
+              hover: {
+                backgroundColor: colors.secondary
+              }
+            }}
           >
             Start Transcribing
           </button>
@@ -85,48 +133,210 @@ const ClientHome = () => {
     </motion.div>
   );
 
+  const LoadingSpinner = () => (
+    <div 
+      className="flex flex-col items-center justify-center min-h-screen"
+      style={{ 
+        background: `linear-gradient(to bottom right, ${colors.background}, ${colors.accent})` 
+      }}
+    >
+      <Loader2 
+        className="animate-spin" 
+        style={{ 
+          height: '3rem', 
+          width: '3rem', 
+          color: colors.primary 
+        }} 
+      />
+      <p 
+        className="mt-4 text-lg"
+        style={{ color: colors.primary }}
+      >
+        Generating Summary...
+      </p>
+    </div>
+  );
+
+  const SummaryComponent = () => (
+    <div 
+      className="min-h-screen p-6"
+      style={{ 
+        background: `linear-gradient(to bottom right, ${colors.background}, ${colors.accent})` 
+      }}
+    >
+      <div 
+        className="mx-auto rounded-xl shadow-lg p-6"
+        style={{ 
+          backgroundColor: colors.background,
+          maxWidth: '42rem',
+          color: colors.text
+        }}
+      >
+        <h2 
+          className="text-2xl font-bold mb-4"
+          style={{ color: colors.primary }}
+        >
+          વાર્તાલાપ સારાંશ
+        </h2>
+        <div className="markdown">
+          {/* Summary content remains the same */}
+          <h3 
+            className="text-xl font-semibold mb-3"
+            style={{ color: colors.primary }}
+          >
+            📌 મુખ્ય ચર્ચા બિંદુઓ
+          </h3>
+          <ul 
+            className="list-disc pl-5 mb-4"
+            style={{ color: colors.text }}
+          >
+            <li>🔹 ગ્રાહક બે કરોડ રૂપિયા સુધીનું ઘર શોધી રહ્યા છે.</li>
+            <li>🔹 ગ્રાહકને મલાડમાં બે કે ત્રણ રૂમનું ઘર જોઈએ છે.</li>
+            <li>🔹 બ્રોકર પાસે મલાડમાં બે નવી પ્રોપર્ટી ઉપલબ્ધ છે.</li>
+          </ul>
+
+          <h3 
+            className="text-xl font-semibold mb-3"
+            style={{ color: colors.primary }}
+          >
+            🏡 પ્રોપર્ટી વિગતો
+          </h3>
+          <table 
+            className="w-full border-collapse mb-4"
+            style={{ borderColor: colors.secondary }}
+          >
+            <thead>
+              <tr style={{ backgroundColor: colors.accent }}>
+                <th 
+                  className="border p-2 text-left"
+                  style={{ borderColor: colors.secondary }}
+                >
+                  વિશેષતા
+                </th>
+                <th 
+                  className="border p-2 text-left"
+                  style={{ borderColor: colors.secondary }}
+                >
+                  વિગતો
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {[
+                ["🏠 પ્રોપર્ટી પ્રકાર", "ઉલ્લેખ નથી"],
+                ["📍 સ્થાન", "મલાડ"],
+                ["💰 કિંમત", "બે કરોડ સુધી"],
+                ["📏 કદ", "બે કે ત્રણ રૂમ"],
+                ["🏗️ સ્થિતિ", "ઉલ્લેખ નથી"]
+              ].map(([feature, detail], index) => (
+                <tr key={index}>
+                  <td 
+                    className="border p-2"
+                    style={{ borderColor: colors.secondary }}
+                  >
+                    {feature}
+                  </td>
+                  <td 
+                    className="border p-2"
+                    style={{ borderColor: colors.secondary }}
+                  >
+                    {detail}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <h3 
+            className="text-xl font-semibold mb-3"
+            style={{ color: colors.primary }}
+          >
+            📋 આગળના પગલાં
+          </h3>
+          <ul 
+            className="list-disc pl-5 mb-4"
+            style={{ color: colors.text }}
+          >
+            <li>✅ ગ્રાહક અને બ્રોકર શુક્રવારે મળશે.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-blue-300 flex flex-col justify-center items-center p-4">
+    <div 
+      className="min-h-screen flex flex-col justify-center items-center p-4"
+      style={{ 
+        background: `linear-gradient(to bottom right, ${colors.background}, ${colors.accent})` 
+      }}
+    >
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
         className="text-center mb-12"
       >
-        <h1 className="text-3xl md:text-5xl font-extrabold text-blue-900 mb-4">
+        <h1 
+          className="text-3xl md:text-5xl font-extrabold mb-4"
+          style={{ color: colors.primary }}
+        >
           {animatedText}
           <span className="animate-pulse">|</span>
         </h1>
-        <p className="text-xl text-blue-700 max-w-2xl mx-auto">
+        <p 
+          className="text-xl max-w-2xl mx-auto"
+          style={{ color: colors.text }}
+        >
           Seamless communication across language barriers with real-time
           translation
         </p>
       </motion.div>
 
       {!isCodeMatched ? (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="w-full max-w-md"
-        >
-          <div className="bg-white rounded-xl shadow-2xl p-6">
-            <input
-              type="text"
-              value={room}
-              onChange={(e) => setRoom(e.target.value)}
-              placeholder="Enter Your Broker Code"
-              className="w-full px-4 py-3 border-2 border-blue-500 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 mb-4"
-            />
-            <button
-              onClick={handleCodeSubmit}
-              className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors font-semibold"
-            >
-              Connect with Broker
-            </button>
-          </div>
-        </motion.div>
+        <div className="w-full max-w-md">
+          <input
+            type="text"
+            value={room}
+            onChange={(e) => setRoom(e.target.value)}
+            placeholder="Enter Your Broker Code"
+            className="w-full px-4 py-3 rounded-lg mb-4"
+            style={{
+              backgroundColor: colors.background,
+              borderColor: colors.primary,
+              borderWidth: 2,
+              color: colors.text
+            }}
+          />
+          <button 
+            onClick={handleCodeSubmit} 
+            className="w-full py-3 rounded-lg"
+            style={{
+              backgroundColor: colors.primary,
+              color: colors.background
+            }}
+          >
+            Connect with Broker
+          </button>
+        </div>
       ) : (
-        <SpeechRecognitionComponent room={room} username="client" />
+        <>
+          {isLoading ? <LoadingSpinner /> : null}
+          <SpeechRecognitionComponent room={room} username="client" />
+          
+          <button 
+            onClick={handleGetSummary} 
+            className="mt-4 px-4 py-2 rounded-lg"
+            style={{
+              backgroundColor: colors.primary,
+              color: colors.background
+            }}
+          >
+            Get Summary
+          </button>
+          
+          {showSummary && <SummaryComponent />}
+        </>
       )}
 
       <AnimatePresence>{showTour && <TourModal />}</AnimatePresence>
@@ -134,4 +344,4 @@ const ClientHome = () => {
   );
 };
 
-export default ClientHome;
+export default ClientHome;  
