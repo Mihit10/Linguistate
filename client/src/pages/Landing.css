@@ -27,9 +27,37 @@
   transform: translateX(-50%);
   width: 330px;
 }
+
 .logo-container img {
-  width: 330px; /* Adjust size as needed */
+  width: 330px;
   height: auto;
+}
+
+/* Mobile Responsiveness for Logo */
+@media screen and (max-width: 768px) {
+  .logo-container {
+     top: 10px; /* Push logo a bit higher */
+     width: 250px; /* Slightly smaller width */
+  }
+
+  .logo-container img {
+     width: 250px; /* Adjust logo size for mobile */
+  }
+
+  .content {
+     margin-top: 50px; /* Adjust content position */
+     padding: 15px; /* Slightly less padding */
+  }
+
+  .button-container {
+     flex-direction: column; /* Stack buttons vertically on mobile */
+     gap: 10px;
+  }
+
+  .bubble {
+     font-size: 14px; /* Smaller font for bubbles */
+     max-width: 150px; /* Adjust bubble width */
+  }
 }
 
 .content {
@@ -80,14 +108,14 @@ button:hover {
 
 @keyframes floatBubble {
   0% {
-    opacity: 0;
-    transform: translateY(0);
+     opacity: 0;
+     transform: translateY(0);
   }
   10% {
-    opacity: 1;
+     opacity: 1;
   }
   100% {
-    opacity: 0;
-    transform: translateY(-100vh);
+     opacity: 0;
+     transform: translateY(-100vh);
   }
 }
