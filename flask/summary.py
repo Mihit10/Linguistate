@@ -136,7 +136,7 @@ Summarize the conversation **strictly based on content**. **Do not add or assume
 🚫 **Strictly summarize what was discussed—no assumptions.**
 """
     # Step 3: Generate summary using Google Gemini
-    model = genai.GenerativeModel("gemini-1.5-pro-latest")  # Using Gemini Pro model
+    model = genai.GenerativeModel("gemini-2.0-flash")  # Using Gemini Pro model
     response = model.generate_content(agent_prompt)
 
     # Step 4: Return formatted summary
