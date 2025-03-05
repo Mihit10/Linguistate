@@ -44,7 +44,7 @@ const ClientHome = () => {
   const handleCodeSubmit = () => {
     // Implement your code matching logic here
     // This is a placeholder - replace with actual verification
-    if (room.trim() === "172839") {
+    if (room.trim() === "142536") {
       setIsCodeMatched(true);
       setShowTour(true);
       socket.emit("updateStatus", true);
