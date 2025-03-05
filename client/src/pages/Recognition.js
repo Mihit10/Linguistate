@@ -425,7 +425,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
                     : "bg-gray-700 text-gray-200 self-start mr-auto" // Align left
                 }`}
               >
-                <strong></strong> {msg.translatedTexttext}
+                <strong></strong> {msg.translatedText}
               </div>
             ))}
           </div>
