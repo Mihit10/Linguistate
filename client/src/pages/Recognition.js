@@ -14,10 +14,12 @@ const SpeechRecognitionComponent = ({ room, username }) => {
   const finalTranscriptRef = useRef("");
   const lastFinalSegmentRef = useRef("");
   const sessionIntervalRef = useRef(null);
+  const timeoutRef = useRef(null);
 
   const [joined, setJoined] = useState(true);
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [translatedText, setTranslatedText] = useState("");
 
   const joinRoom = () => {
     if (room.trim() !== "" && username.trim() !== "") {
@@ -28,6 +30,47 @@ const SpeechRecognitionComponent = ({ room, username }) => {
     console.log(messages);
   };
 
+  // useEffect(() => {
+  //   const translateLastMessage = async () => {
+  //     if (messages.length === 0) return; // Prevent running on initial render
+
+  //     const lastMessage = messages[messages.length - 1]; // Get the most recent message
+  //     if (!lastMessage.textEnglish) return; // Ensure there is text to translate
+
+  //     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+  //     timeoutRef.current = setTimeout(async () => {
+  //       try {
+  //         if (lastMessage.sender !== username) {
+  //           const response = await axios.post(
+  //             "https://macaque-awake-implicitly.ngrok-free.app/refine",
+  //             {
+  //               text: lastMessage.textEnglish,
+  //               brokerLanguage: "en-IN",
+  //               clientLanguage: language,
+  //             }
+  //           );
+
+  //           setTranslatedText(response.data.translated_text);
+  //         } else {
+  //           setTranslatedText(lastMessage.text);
+  //         }
+
+  //         setMessages((prevMessages) =>
+  //           prevMessages.map((msg) =>
+  //             msg._id === lastMessage._id ? { ...msg, translatedText } : msg
+  //           )
+  //         );
+  //       } catch (error) {
+  //         console.error("Error translating text:", error);
+  //       }
+  //     }, 1000); // 1s delay
+  //   };
+
+  //   translateLastMessage();
+  //   console.log(messages);
+  // }, [messages]);
+
   useEffect(() => {
     const translateLastMessage = async () => {
       if (messages.length === 0) return; // Prevent running on initial render
@@ -36,16 +79,21 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       if (!lastMessage.textEnglish) return; // Ensure there is text to translate
 
       try {
-        const response = await axios.post(
-          "https://macaque-awake-implicitly.ngrok-free.app/refine",
-          {
-            text: lastMessage.textEnglish,
-            brokerLanguage: "en-IN",
-            clientLanguage: language,
-          }
-        );
+        let translatedText;
+        if (lastMessage.sender !== username) {
+          const response = await axios.post(
+            "https://macaque-awake-implicitly.ngrok-free.app/refine",
+            {
+              text: lastMessage.textEnglish,
+              brokerLanguage: "en-IN",
+              clientLanguage: language,
+            }
+          );
 
-        const translatedText = response.data.translated_text;
+          translatedText = response.data.translated_text;
+        } else {
+          translatedText = lastMessage.text;
+        }
 
         // Update the latest message with translated text
         setMessages((prevMessages) =>
@@ -94,7 +142,6 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       console.log(`🆕 ${newMessage.sender}: ${newMessage.text}`);
       setMessages((prev) => [...prev, newMessage]);
     });
-    
 
     return () => {
       console.log("⚠️ Cleaning up listeners");
@@ -103,12 +150,11 @@ const SpeechRecognitionComponent = ({ room, username }) => {
     };
   }, []);
   useEffect(() => {
-    console.log("🔴 Chat History:");
+    // console.log("🔴 Chat History:");
     messages.forEach((msg, index) => {
-      console.log(`${index + 1}. ${msg.sender}: ${msg.text}`);
+      // console.log(`${index + 1}. ${msg.sender}: ${msg.text}`);
     });
   }, [messages]);
-  
 
   useEffect(() => {
     if (transcriptLines.length > 0) {
@@ -140,7 +186,6 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       setMessage("");
     }
   };
-  
 
   // Optimize text breaking
   const breakLongText = useCallback((text, maxLength = 40) => {
@@ -354,7 +399,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
               <option value="pa-IN">Punjabi (ਪੰਜਾਬੀ)</option>
             </select>
           </div>
-  
+
           {/* Session Duration */}
           <div className="flex items-center space-x-2 text-white ml-2">
             <Clock className="text-blue-300" size={20} />
@@ -363,7 +408,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
             </span>
           </div>
         </div>
-  
+
         {/* Transcription Area */}
         {/* <div className="h-64 relative overflow-hidden rounded-lg mb-6">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/10 pointer-events-none z-10"></div>
@@ -403,25 +448,28 @@ const SpeechRecognitionComponent = ({ room, username }) => {
             {transcriptLines.length > 0 && generatePlaceholders()}
           </div>
         </div> */}
-  
+
         {/* Chat History Section */}
-<div className="-mt-2 w-full bg-[#5D4037] p-6 rounded-lg shadow-lg max-h-80 overflow-y-auto">
-  <h2 className="text-[#cfaa9d] font-semibold text-lg mb-3">Chat History</h2>
-  <div className="space-y-3">
-    {messages.map((msg, index) => (
-      <div
-        key={index}
-        className={`p-3 rounded-lg max-w-[80%] text-sm ${
-          msg.sender === username
-            ? "bg-[#8D6E63] text-white self-end ml-auto" // Align right with brown tone
-            : "bg-[#3E2723] text-[#D7CCC8] self-start mr-auto" // Align left with dark brown
-        }`}
-      >
-        <strong ></strong> {msg.text}
-      </div>
-    ))}
-  </div>
-</div>
+        <div className="-mt-2 w-full bg-gray-800 p-4 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+          <h2 className="text-white font-semibold text-lg mb-2">
+            Chat History
+          </h2>
+          <div className="space-y-2">
+            {messages.map((msg, index) => (
+              <div
+                key={index}
+                className={`p-2 rounded-lg max-w-[75%] ${
+                  msg.sender === username
+                    ? "bg-blue-500 text-white self-end ml-auto" // Align right
+                    : "bg-gray-700 text-gray-200 self-start mr-auto" // Align left
+                }`}
+              >
+                <strong></strong> {msg.translatedText}
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Control Buttons */}
         <div className="flex space-x-4 mt-4">
           <motion.button
@@ -438,7 +486,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
             <Mic size={20} />
             <span>{isListening ? "Listening..." : "Start Transcribing"}</span>
           </motion.button>
-  
+
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -452,7 +500,6 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       </motion.div>
     </div>
   );
-  
 };
 
 export default SpeechRecognitionComponent;
