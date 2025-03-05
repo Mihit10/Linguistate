@@ -88,9 +88,10 @@ const SpeechRecognitionComponent = ({ room, username }) => {
     });
 
     socket.off("receiveMessage").on("receiveMessage", (newMessage) => {
-      console.log("🔴 New message received:", newMessage);
+      console.log(`🆕 ${newMessage.sender}: ${newMessage.text}`);
       setMessages((prev) => [...prev, newMessage]);
     });
+    
 
     return () => {
       console.log("⚠️ Cleaning up listeners");
@@ -98,6 +99,13 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       socket.off("receiveMessage");
     };
   }, []);
+  useEffect(() => {
+    console.log("🔴 Chat History:");
+    messages.forEach((msg, index) => {
+      console.log(`${index + 1}. ${msg.sender}: ${msg.text}`);
+    });
+  }, [messages]);
+  
 
   useEffect(() => {
     if (transcriptLines.length > 0) {
@@ -119,12 +127,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
 
   const sendMessage = () => {
     if (message.trim() !== "") {
-      console.log("Sending:", {
-        room,
-        sender: username,
-        text: message,
-        language: language,
-      });
+      console.log(`📤 You: ${message}`);
       socket.emit("sendMessage", {
         room,
         sender: username,
@@ -134,6 +137,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       setMessage("");
     }
   };
+  
 
   // Optimize text breaking
   const breakLongText = useCallback((text, maxLength = 40) => {
@@ -321,7 +325,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-start justify-center p-2">
       <motion.div
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -347,7 +351,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
               <option value="pa-IN">Punjabi (ਪੰਜਾਬੀ)</option>
             </select>
           </div>
-
+  
           {/* Session Duration */}
           <div className="flex items-center space-x-2 text-white ml-2">
             <Clock className="text-blue-300" size={20} />
@@ -356,11 +360,11 @@ const SpeechRecognitionComponent = ({ room, username }) => {
             </span>
           </div>
         </div>
-
+  
         {/* Transcription Area */}
-        <div className="h-64 relative overflow-hidden rounded-lg mb-6">
+        {/* <div className="h-64 relative overflow-hidden rounded-lg mb-6">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white/10 pointer-events-none z-10"></div>
-
+  
           <div className="absolute inset-0 flex flex-col justify-center items-center z-20">
             <div className="space-y-2 max-h-full overflow-hidden">
               <AnimatePresence>
@@ -392,13 +396,32 @@ const SpeechRecognitionComponent = ({ room, username }) => {
                 )}
               </AnimatePresence>
             </div>
-            {/* Visual Placeholders */}
+            
             {transcriptLines.length > 0 && generatePlaceholders()}
           </div>
+        </div> */}
+  
+        {/* Chat History Section */}
+        <div className="-mt-2 w-full bg-gray-800 p-4 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+          <h2 className="text-white font-semibold text-lg mb-2">Chat History</h2>
+          <div className="space-y-2">
+            {messages.map((msg, index) => (
+              <div
+              key={index}
+              className={`p-2 rounded-lg max-w-[75%] ${
+                msg.sender === username
+                  ? "bg-blue-500 text-white self-end ml-auto" // Align right
+                  : "bg-gray-700 text-gray-200 self-start mr-auto" // Align left
+              }`}
+              >
+                <strong></strong> {msg.text}
+              </div>
+            ))}
+          </div>
         </div>
-
+  
         {/* Control Buttons */}
-        <div className="flex space-x-4">
+        <div className="flex space-x-4 mt-4">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -413,7 +436,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
             <Mic size={20} />
             <span>{isListening ? "Listening..." : "Start Transcribing"}</span>
           </motion.button>
-
+  
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -427,6 +450,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
       </motion.div>
     </div>
   );
+  
 };
 
 export default SpeechRecognitionComponent;
