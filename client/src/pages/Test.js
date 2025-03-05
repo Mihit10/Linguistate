@@ -128,13 +128,13 @@ const Test = () => {
   const [propertySuggestions, setPropertySuggestions] = useState([
     {
       id: 1,
-      image: "/api/placeholder/300/200",
+      image: "/p2.png",
       price: "₹75 Lakhs",
       details: "2 BHK | 1,200 sq ft | Modern Kitchen",
     },
     {
       id: 2,
-      image: "/api/placeholder/300/200",
+      image: "/p1.png",
       price: "₹92 Lakhs",
       details: "2 BHK | 1,350 sq ft | Balcony View",
     },
