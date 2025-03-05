@@ -9,8 +9,8 @@ import Summarizer_eng from "./pages/Summarizer_eng";
 import ClientDash from "./pages/ClientDash";
 import ClientHome from "./pages/ClientHome";
 import Landing from "./pages/Landing";
-import BrokerHome from "./pages/BrokerHome";
-import Test from "./pages/Test";
+
+import Test from "./pages/BrokerHome";
 
 function App() {
   return (

@@ -431,16 +431,16 @@ const SpeechRecognitionComponent = ({ room, username }) => {
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.3 }}
-        className="w-full max-w-md bg-white/10 bg-gradient-to-br from-blue-900 to-indigo-900 backdrop-blur-xl shadow-2xl rounded-2xl p-6 border border-white/20 relative"
+        className="w-full max-w-md bg-[#DAC0A3] backdrop-blur-xl shadow-2xl rounded-2xl p-6 border-2 border-amber-950 relative"
       >
         {/* Header with Language and Duration */}
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center space-x-2 w-full">
-            <Globe className="text-blue-300 flex-shrink-0" size={24} />
+            <Globe className="text-amber-900 flex-shrink-0" size={24} />
             <select
               value={language}
               onChange={(e) => setLanguage(e.target.value)}
-              className="bg-indigo-800/70 text-white p-2 rounded-lg border border-white/20 focus:ring-2 focus:ring-blue-300 transition w-full"
+              className="bg-[#EADBC8] text-amber-900 p-2 rounded-lg border focus:ring-2 focus:ring-amber-900 transition w-full"
               disabled={isListening}
             >
               <option value="en-IN">English (India)</option>
@@ -454,8 +454,8 @@ const SpeechRecognitionComponent = ({ room, username }) => {
           </div>
 
           {/* Session Duration */}
-          <div className="flex items-center space-x-2 text-white ml-2">
-            <Clock className="text-blue-300" size={20} />
+          <div className="flex items-center space-x-2 text-amber-900 ml-2">
+            <Clock className="text-amber-900" size={20} />
             <span className="font-mono text-lg">
               {formatDuration(sessionDuration)}
             </span>
@@ -503,8 +503,8 @@ const SpeechRecognitionComponent = ({ room, username }) => {
         </div> */}
 
         {/* Chat History Section */}
-        <div className="-mt-2 w-full bg-gray-800 p-4 rounded-lg shadow-lg max-h-64 overflow-y-auto">
-          <h2 className="text-white font-semibold text-lg mb-2">
+        <div className="-mt-2 w-full bg-[#EADBC8] p-4 rounded-lg shadow-lg max-h-64 overflow-y-auto">
+          <h2 className="text-amber-900 font-semibold text-lg mb-2">
             Chat History
           </h2>
           <div className="space-y-2">
@@ -513,8 +513,8 @@ const SpeechRecognitionComponent = ({ room, username }) => {
                 key={index}
                 className={`p-2 rounded-lg max-w-[75%] ${
                   msg.sender === username
-                    ? "bg-blue-500 text-white self-end ml-auto" // Align right
-                    : "bg-gray-700 text-gray-200 self-start mr-auto" // Align left
+                    ? "bg-[#DAC0A3] text-[#102C57] self-end ml-auto" // Align right
+                    : "bg-[#102C57] text-[#DAC0A3] self-start mr-auto" // Align left
                 }`}
               >
                 <strong></strong> {msg.translatedText}
@@ -524,7 +524,7 @@ const SpeechRecognitionComponent = ({ room, username }) => {
         </div>
 
         {/* Control Buttons */}
-        <div className="flex space-x-4 mt-4">
+        <div className="flex space-x-2 mt-4">
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
@@ -533,10 +533,10 @@ const SpeechRecognitionComponent = ({ room, username }) => {
             className={`flex-1 flex items-center justify-center space-x-2 px-4 py-3 rounded-lg text-white font-semibold transition-all ${
               isListening
                 ? "bg-gray-600/50 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700"
+                : "bg-amber-800 "
             }`}
           >
-            <Mic size={20} />
+            <Mic size={30} />
             <span>{isListening ? "Listening..." : "Start Transcribing"}</span>
           </motion.button>
 
@@ -544,9 +544,9 @@ const SpeechRecognitionComponent = ({ room, username }) => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={stopRecognition}
-            className="bg-red-500/80 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition-all flex items-center space-x-2"
+            className="bg-red-800 text-white px-4 py-3 rounded-lg hover:bg-red-600 transition-all flex items-center space-x-2 font-semibold"
           >
-            <MicOff size={20} />
+            <MicOff size={30} />
             <span>Stop</span>
           </motion.button>
         </div>
