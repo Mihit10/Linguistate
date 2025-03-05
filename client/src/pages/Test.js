@@ -1,47 +1,92 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "../components/ui/Card";
+import { Button } from "../components/ui/Button";
 import { useNavigate } from "react-router-dom";
-import SpeechRecognitionComponent from './Recognition';
+import SpeechRecognitionComponent from "./Recognition";
 import socket from "./socket";
 
 // SVG Icons (from BrokerDash.js)
 const BudgetIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
   </svg>
 );
 
 const LocationIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z"/>
-    <circle cx="12" cy="10" r="3"/>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M12 22s-8-4.5-8-11.8A8 8 0 0 1 12 2a8 8 0 0 1 8 8.2c0 7.3-8 11.8-8 11.8z" />
+    <circle cx="12" cy="10" r="3" />
   </svg>
 );
 
 const PropertyTypeIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
-    <polyline points="9 22 9 12 15 12 15 22"/>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    <polyline points="9 22 9 12 15 12 15 22" />
   </svg>
 );
 
 const CalendarIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
-    <line x1="16" y1="2" x2="16" y2="6"/>
-    <line x1="8" y1="2" x2="8" y2="6"/>
-    <line x1="3" y1="10" x2="21" y2="10"/>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+    <line x1="16" y1="2" x2="16" y2="6" />
+    <line x1="8" y1="2" x2="8" y2="6" />
+    <line x1="3" y1="10" x2="21" y2="10" />
   </svg>
 );
 
 const SummaryIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
-    <line x1="8" y1="12" x2="16" y2="12"/>
-    <line x1="8" y1="16" x2="16" y2="16"/>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
+    <rect x="8" y="2" width="8" height="4" rx="1" ry="1" />
+    <line x1="8" y1="12" x2="16" y2="12" />
+    <line x1="8" y1="16" x2="16" y2="16" />
   </svg>
 );
 
@@ -54,14 +99,22 @@ const Test = () => {
     name: "Mihit Singasane",
     language: "English",
     specialization: "Real Estate Broker",
-    uniqueCode: "112233",
+    uniqueCode: "251545",
     email: "mihit.singasane@realestate.com",
     phone: "+91 98765 43210",
   };
 
   const [transcription, setTranscription] = useState([
-    { id: 1, text: "Hi there, I'm looking for a 2-bedroom apartment.", sender: 'client' },
-    { id: 2, text: "Great! Can you tell me more about your budget and preferred location?", sender: 'broker' }
+    {
+      id: 1,
+      text: "Hi there, I'm looking for a 2-bedroom apartment.",
+      sender: "client",
+    },
+    {
+      id: 2,
+      text: "Great! Can you tell me more about your budget and preferred location?",
+      sender: "broker",
+    },
   ]);
 
   const customerCriteria = [
@@ -69,22 +122,22 @@ const Test = () => {
     { icon: <LocationIcon />, text: "Preferred Locality: Andheri, Mumbai" },
     { icon: <PropertyTypeIcon />, text: "Property Type: 2BHK Apartment" },
     { icon: <BudgetIcon />, text: "Rent: ₹30K - ₹50K/month" },
-    { icon: <LocationIcon />, text: "Nearby Schools & Markets Required" }
+    { icon: <LocationIcon />, text: "Nearby Schools & Markets Required" },
   ];
 
   const [propertySuggestions, setPropertySuggestions] = useState([
     {
       id: 1,
-      image: '/api/placeholder/300/200',
-      price: '₹75 Lakhs',
-      details: '2 BHK | 1,200 sq ft | Modern Kitchen'
+      image: "/api/placeholder/300/200",
+      price: "₹75 Lakhs",
+      details: "2 BHK | 1,200 sq ft | Modern Kitchen",
     },
     {
       id: 2,
-      image: '/api/placeholder/300/200',
-      price: '₹92 Lakhs',
-      details: '2 BHK | 1,350 sq ft | Balcony View'
-    }
+      image: "/api/placeholder/300/200",
+      price: "₹92 Lakhs",
+      details: "2 BHK | 1,350 sq ft | Balcony View",
+    },
   ]);
 
   useEffect(() => {
@@ -117,7 +170,7 @@ const Test = () => {
   }, []);
 
   return (
-    <div 
+    <div
       className="min-h-screen p-4 bg-[#F5F0E6] flex flex-col space-y-4"
       style={{ fontFamily: "'Inter', sans-serif" }}
     >
@@ -182,7 +235,8 @@ const Test = () => {
             <span className="animate-pulse">|</span>
           </h1>
           <p className="text-lg text-indigo-700 max-w-2xl mx-auto mb-6 text-center">
-            Share your unique code with your client to start the translation session
+            Share your unique code with your client to start the translation
+            session
           </p>
 
           <motion.div
@@ -215,18 +269,16 @@ const Test = () => {
           {/* Left Side: Real-Time Chat and Speech Recognition */}
           <div className="col-span-8 space-y-4">
             {/* Speech Recognition Component */}
-            <SpeechRecognitionComponent room="112233" username="broker" />
+            <SpeechRecognitionComponent room="251545" username="broker" />
           </div>
 
           {/* Right Side: Customer Preferences */}
           <div className="col-span-4">
-            <Card 
+            <Card
               className="bg-white shadow-md rounded-lg"
-              style={{ borderColor: '#8B4513' }}
+              style={{ borderColor: "#8B4513" }}
             >
-              <CardHeader 
-                className="bg-[#D2B48C] text-[#5D4037] p-3"
-              >
+              <CardHeader className="bg-[#D2B48C] text-[#5D4037] p-3">
                 <CardTitle className="text-lg font-bold">
                   Customer Preferences
                 </CardTitle>
@@ -234,8 +286,8 @@ const Test = () => {
               <CardContent className="p-3">
                 <ul className="space-y-2">
                   {customerCriteria.map((item, index) => (
-                    <li 
-                      key={index} 
+                    <li
+                      key={index}
                       className="flex items-center gap-2 text-sm text-[#5D4037]"
                     >
                       <span className="text-[#8B4513]">{item.icon}</span>
@@ -252,29 +304,29 @@ const Test = () => {
       {/* Bottom Section: Property Suggestions */}
       {isJoined && (
         <div className="bg-white rounded-lg shadow-md p-4">
-          <h2 className="text-xl font-bold text-[#5D4037] mb-3">Property Suggestions</h2>
+          <h2 className="text-xl font-bold text-[#5D4037] mb-3">
+            Property Suggestions
+          </h2>
           <div className="grid grid-cols-2 gap-4">
             {propertySuggestions.map((property) => (
-              <Card 
-                key={property.id} 
+              <Card
+                key={property.id}
                 className="bg-white shadow-md rounded-lg overflow-hidden"
               >
-                <img 
-                  src={property.image} 
-                  alt="Property" 
+                <img
+                  src={property.image}
+                  alt="Property"
                   className="w-full h-40 object-cover"
                 />
                 <CardContent className="p-3">
                   <div className="flex justify-between items-center mb-2">
-                    <h3 
+                    <h3
                       className="text-lg font-bold"
-                      style={{ color: '#8B4513' }}
+                      style={{ color: "#8B4513" }}
                     >
                       {property.price}
                     </h3>
-                    <Button
-                      className="bg-[#27AE60] text-white text-xs px-3 py-2"
-                    >
+                    <Button className="bg-[#27AE60] text-white text-xs px-3 py-2">
                       Send Details
                     </Button>
                   </div>
@@ -290,13 +342,11 @@ const Test = () => {
       {isJoined && (
         <div className="grid grid-cols-2 gap-4">
           {/* Meeting Scheduler */}
-          <Card 
+          <Card
             className="bg-white shadow-md rounded-lg"
-            style={{ borderColor: '#8B4513' }}
+            style={{ borderColor: "#8B4513" }}
           >
-            <CardHeader 
-              className="bg-[#D2B48C] text-[#5D4037] p-3 flex items-center"
-            >
+            <CardHeader className="bg-[#D2B48C] text-[#5D4037] p-3 flex items-center">
               <CalendarIcon className="mr-2 text-[#8B4513]" />
               <CardTitle className="text-lg font-bold">
                 Schedule Meeting
@@ -304,47 +354,45 @@ const Test = () => {
             </CardHeader>
             <CardContent className="p-3">
               <div className="grid grid-cols-7 gap-1 text-center text-xs">
-                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
-                  <div 
-                    key={day} 
-                    className="p-1 rounded hover:bg-[#D2B48C] cursor-pointer"
-                  >
-                    {day}
-                  </div>
-                ))}
+                {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+                  (day) => (
+                    <div
+                      key={day}
+                      className="p-1 rounded hover:bg-[#D2B48C] cursor-pointer"
+                    >
+                      {day}
+                    </div>
+                  )
+                )}
               </div>
-              <Button 
-                className="w-full mt-3 bg-[#8B4513] text-white text-xs"
-              >
+              <Button className="w-full mt-3 bg-[#8B4513] text-white text-xs">
                 Book Slot
               </Button>
             </CardContent>
           </Card>
 
           {/* Conversation Summary */}
-          <Card 
+          <Card
             className="bg-white shadow-md rounded-lg"
-            style={{ borderColor: '#8B4513' }}
+            style={{ borderColor: "#8B4513" }}
           >
-            <CardHeader 
-              className="bg-[#D2B48C] text-[#5D4037] p-3 flex items-center"
-            >
+            <CardHeader className="bg-[#D2B48C] text-[#5D4037] p-3 flex items-center">
               <SummaryIcon className="mr-2 text-[#8B4513]" />
               <CardTitle className="text-lg font-bold">
                 Conversation Summary
               </CardTitle>
             </CardHeader>
             <CardContent className="p-3">
-              <textarea 
+              <textarea
                 className="w-full h-32 p-2 border rounded text-xs"
                 placeholder="Auto-generated summary will appear here..."
-                style={{ 
-                  backgroundColor: '#F5F0E6',
-                  borderColor: '#8B4513',
-                  color: '#5D4037'
+                style={{
+                  backgroundColor: "#F5F0E6",
+                  borderColor: "#8B4513",
+                  color: "#5D4037",
                 }}
               />
-              <Button 
+              <Button
                 className="w-full mt-3 bg-[#8B4513] text-white text-xs"
                 onClick={() => navigate("/summarizer")}
               >
@@ -355,7 +403,7 @@ const Test = () => {
         </div>
       )}
     </div>
-);
+  );
 };
 
 export default Test;

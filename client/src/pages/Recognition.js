@@ -71,12 +71,61 @@ const SpeechRecognitionComponent = ({ room, username }) => {
   //   console.log(messages);
   // }, [messages]);
 
+  // useEffect(() => {
+  //   const translateLastMessage = async () => {
+  //     if (messages.length === 0) return; // Prevent running on initial render
+
+  //     const lastMessage = messages[messages.length - 1]; // Get the most recent message
+  //     if (!lastMessage.textEnglish) return; // Ensure there is text to translate
+
+  //     try {
+  //       let translatedText;
+  //       if (lastMessage.sender !== username) {
+  //         const response = await axios.post(
+  //           "https://macaque-awake-implicitly.ngrok-free.app/refine",
+  //           {
+  //             text: lastMessage.textEnglish,
+  //             brokerLanguage: "en-IN",
+  //             clientLanguage: language,
+  //           }
+  //         );
+
+  //         translatedText = response.data.translated_text;
+  //       } else {
+  //         translatedText = lastMessage.text;
+  //       }
+
+  //       // Update the latest message with translated text
+  //       setMessages((prevMessages) =>
+  //         prevMessages.map((msg) =>
+  //           msg._id === lastMessage._id ? { ...msg, translatedText } : msg
+  //         )
+  //       );
+  //     } catch (error) {
+  //       console.error("Error translating text:", error);
+  //     }
+  //   };
+
+  //   translateLastMessage();
+  //   console.log(messages);
+  // }, [messages]);
+
+  const lastMessageRef = useRef(null);
+
   useEffect(() => {
     const translateLastMessage = async () => {
-      if (messages.length === 0) return; // Prevent running on initial render
+      if (messages.length === 0) return;
 
-      const lastMessage = messages[messages.length - 1]; // Get the most recent message
-      if (!lastMessage.textEnglish) return; // Ensure there is text to translate
+      const lastMessage = messages[messages.length - 1];
+
+      // Prevent re-processing the same message
+      if (
+        !lastMessage.textEnglish ||
+        lastMessageRef.current === lastMessage._id
+      )
+        return;
+
+      lastMessageRef.current = lastMessage._id; // Store the last processed message ID
 
       try {
         let translatedText;
@@ -95,7 +144,6 @@ const SpeechRecognitionComponent = ({ room, username }) => {
           translatedText = lastMessage.text;
         }
 
-        // Update the latest message with translated text
         setMessages((prevMessages) =>
           prevMessages.map((msg) =>
             msg._id === lastMessage._id ? { ...msg, translatedText } : msg
@@ -107,7 +155,6 @@ const SpeechRecognitionComponent = ({ room, username }) => {
     };
 
     translateLastMessage();
-    console.log(messages);
   }, [messages]);
 
   // Ensure the user joins the room when username and room are available
@@ -204,7 +251,13 @@ const SpeechRecognitionComponent = ({ room, username }) => {
           socket.emit("sendMessage", {
             room,
             sender: username,
-            text: message,
+            text: currentLine,
+            language: language,
+          });
+          console.log("Message sent:", {
+            room,
+            sender: username,
+            text: currentLine,
             language: language,
           });
         }
